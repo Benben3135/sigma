@@ -8,7 +8,7 @@ import {
   SignedOut,
   UserButton,
 } from "@clerk/nextjs";
-import Header from "@/components/Header";
+import Header from "@/app/components/Navbar";
 
 import { cn } from "@/lib/utils"
  
@@ -31,7 +31,7 @@ export default function RootLayout({
       <html lang="en">
       <body
         className={cn(
-          "min-h-screen bg-background font-sans antialiased",
+          "min-h-screen bg-[#030014] font-sans antialiased overflow-y-scroll overflow-x-hidden",
           fontSans.variable
         )}
       >
