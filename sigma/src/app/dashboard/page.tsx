@@ -1,16 +1,33 @@
-import { auth, currentUser } from "@clerk/nextjs/server";
+"use client";
 
-export default async function Page() {
+import React, { useEffect } from 'react';
+import { useAuth, useUser } from "@clerk/nextjs";
+import { useQuery } from '@tanstack/react-query';
+import axios from "axios";
 
-  // Get the userId from auth() -- if null, the user is not signed in
-  const { userId } = auth();
+const Page = () => {
+  const { isSignedIn, user } = useUser();
+  const email = user?.emailAddresses[0]?.emailAddress;
 
-  if (userId) {
-    console.log(userId)
-    // Query DB for user specific information or display assets only to signed in users
-  }
+  const { data, error, isLoading } = useQuery({
+    queryKey: ['checkEmail', email],
+    queryFn: () => 
+      axios.get(`/api/users/check-email`, { params: { email } })
+        .then(res => res.data),
+    enabled: isSignedIn && !!email, // Ensure email is not null or undefined
+  });
 
-  // Get the Backend API User object when you need access to the user's information
-  const user = await currentUser()
-  // Use `user` to render user details or create UI elements
-}
+  useEffect(() => {
+    if (!data && !isLoading) { // Adjust based on actual response structure
+      window.location.href = '/set-up';
+      console.log("data is null", data)
+    }
+  }, [isSignedIn, data]);
+
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error.message}</p>;
+
+  return <div>User email is in the database.</div>;
+};
+
+export default Page;

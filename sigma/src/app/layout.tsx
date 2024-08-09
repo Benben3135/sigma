@@ -12,6 +12,9 @@ import { ThemeProvider } from "./provider";
 import Navbar from "@/components/Navbar";
 
 import { cn } from "@/lib/utils";
+import { QueryClientProvider } from "@tanstack/react-query";
+import queryClient from "@/lib/react-query-client";
+import Providers from "@/utils/Providers";
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -29,29 +32,32 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
-        <head>
-          <link rel="icon" href="/favicon.png" sizes="any" />
-        </head>
-        <body
-          className={cn(
-            "min-h-screen bg-[#030014] font-sans antialiased overflow-y-scroll overflow-x-hidden",
-            fontSans.variable
-          )}
-        >
-          {" "}
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="dark"
-            enableSystem
-            disableTransitionOnChange
+      <Providers>
+        <html lang="en" suppressHydrationWarning>
+          <head>
+            <link rel="icon" href="/favicon.png" sizes="any" />
+          </head>
+          <body
+            className={cn(
+              "min-h-screen bg-[#030014] font-sans antialiased overflow-y-scroll overflow-x-hidden",
+              fontSans.variable
+            )}
           >
-            <main>
-              <Navbar />
-              {children}</main>
-          </ThemeProvider>
-        </body>
-      </html>
+            {" "}
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="dark"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <main>
+                <Navbar />
+                {children}
+              </main>
+            </ThemeProvider>
+          </body>
+        </html>
+      </Providers>
     </ClerkProvider>
   );
 }

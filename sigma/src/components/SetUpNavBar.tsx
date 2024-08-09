@@ -15,7 +15,7 @@ const SetUpNavBar = () => {
     },[alert])
 
   return (
-    <div className="w-full h-[65px] fixed top-0 shadow-lg shadow-[#2A0E61]/50 bg-[#03001417] backdrop-blur-md z-50 px-10 flex flex-row justify-center items-center">
+    <div className="w-full h-[65px] fixed top-0 shadow-lg shadow-[#2A0E61]/50 bg-[#03001417] backdrop-blur-3xl z-50 px-10 flex flex-row justify-center items-center">
       <Image
       onClick={()=>setAlert(true)}
         src="/logo.svg"

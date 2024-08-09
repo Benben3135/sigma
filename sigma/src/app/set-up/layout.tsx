@@ -7,7 +7,7 @@ export default function SetUpLayout({
   }) {
     return (
       <div>
-        <SetUpNavBar />
+        <SetUpNavBar/>
         {children}
       </div>
     )
