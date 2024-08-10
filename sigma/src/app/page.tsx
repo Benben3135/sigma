@@ -1,25 +1,37 @@
 "use client";
 
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import {motion} from "framer-motion"
-import Hero from "@/app/components/landing/main/Hero";
-import Skills from "@/app/components/landing/main/Skills";
-import Encryption from "@/app/components/landing/main/Encryption";
-import Projects from "@/app/components/landing/main/Projects";
-import Footer from "@/app/components/landing/main/Footer";
+import { navItems } from "@/data";
 
-export default function Home() {
-
+import Hero from "@/components/Hero";
+import Grid from "@/components/Grid";
+import Footer from "@/components/Footer";
+import Clients from "@/components/Clients";
+import Approach from "@/components/Approach";
+import Experience from "@/components/Experience";
+import RecentProjects from "@/components/RecentProjects";
+import { FloatingNav } from "@/components/ui/FloatingNavbar";
+import {useAuth} from "@clerk/nextjs"
+import { useEffect } from "react";
+const Home = () => {
+  const {isSignedIn} = useAuth()
+  useEffect(() => {
+    if(isSignedIn){
+      window.location.href = "/dashboard"
+    }
+  },[])
   return (
-    <main className="h-full w-full">
-      <div className="h-[850px] flex flex-col gap-20">
+    <main className="relative bg-black-100 flex justify-center items-center flex-col overflow-hidden mx-auto sm:px-10 px-5">
+      <div className="max-w-7xl w-full">
         <Hero />
-        <Skills />
-        <Encryption />
-        <Projects />
+        <Grid />
+        <RecentProjects />
+        <Clients />
+        <Experience />
+        <Approach />
         <Footer />
       </div>
     </main>
   );
-}
+};
+
+export default Home;
