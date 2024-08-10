@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@apollo/client": "^3.11.4",
     "@clerk/elements": "^0.12.1",
     "@clerk/nextjs": "^5.2.8",
     "@heroicons/react": "^2.1.5",
@@ -23,11 +24,14 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "framer-motion": "^11.3.19",
+    "graphql": "^16.9.0",
+    "graphql-request": "7.1.0",
     "gsap": "^3.12.5",
     "jquery": "^3.7.1",
     "lucide-react": "^0.416.0",
     "mini-svg-data-uri": "^1.4.4",
     "next": "14.2.5",
+    "next-themes": "^0.3.0",
     "react": "^18",
     "react-dom": "^18",
     "react-icons": "^5.2.1",

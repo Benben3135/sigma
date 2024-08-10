@@ -4,6 +4,8 @@ import React, { useEffect } from 'react';
 import { useAuth, useUser } from "@clerk/nextjs";
 import { useQuery } from '@tanstack/react-query';
 import axios from "axios";
+import Loading from '@/components/Loading';
+import SideNavBar from '@/components/SideNavBar';
 
 const Page = () => {
   const { isSignedIn, user } = useUser();
@@ -24,10 +26,17 @@ const Page = () => {
     }
   }, [isSignedIn, data]);
 
-  if (isLoading) return <p>Loading...</p>;
+  if(isLoading) return <Loading />;
+
   if (error) return <p>Error: {error.message}</p>;
 
-  return <div>User email is in the database.</div>;
+  return (
+    <div className='w-screen h-screen'>
+              <SideNavBar/>
+
+      
+    </div>
+  )
 };
 
 export default Page;

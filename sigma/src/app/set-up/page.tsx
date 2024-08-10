@@ -19,7 +19,7 @@ const page = () => {
   const email = user?.emailAddresses[0]?.emailAddress;
   const name = user?.firstName;
   const router = useRouter();
-  const [page, setPage] = useState<number>(4);
+  const [page, setPage] = useState<number>(0);
   const [selected1, setSelected1] = useState<number[] | null>([]);
   const [weight, setWeight] = useState<string>("");
   const [height, setHeight] = useState<string>("");
