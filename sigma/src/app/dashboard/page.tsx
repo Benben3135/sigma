@@ -5,7 +5,6 @@ import { useAuth, useUser } from "@clerk/nextjs";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import Loading from "@/components/Loading";
-import SideNavBar from "@/components/SideNavBar";
 
 const Page = () => {
   const { isSignedIn, user } = useUser();
@@ -34,7 +33,7 @@ const Page = () => {
 
   return (
     <div className="w-screen h-screen">
-      <SideNavBar />
+      
     </div>
   );
 };
