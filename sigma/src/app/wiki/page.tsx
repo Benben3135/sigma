@@ -9,8 +9,9 @@ import axios from "axios";
 import Article from "@/components/Article";
 import Loading from "@/components/Loading";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
-interface Post {
+export interface Post {
   _id: string;
   field: string;
   subField: string;
@@ -26,6 +27,7 @@ interface Post {
 }
 
 const page = () => {
+  const router = useRouter();
   const [searchText, setSearchText] = useState("");
   const [searchResults, setSearchResults] = useState<Post[]>([]);
   const handleSearchChange = (value: string) => {
@@ -47,14 +49,13 @@ const page = () => {
         .then((data) => {
           setSearchResults(data);
           return data;
-        })
-        ,
+        }),
     enabled: searchText !== "", // Ensure email is not null or undefined
   });
 
   useEffect(() => {
-    setSearchResults([])
-  },[searchText.length == 0])
+    setSearchResults([]);
+  }, [searchText.length == 0]);
 
   const {
     data: postsData = [], // Default to an empty array
@@ -71,7 +72,12 @@ const page = () => {
   if (postsLoading) return <Loading />;
 
   return (
-    <div className="w-screen h-fit px-36">
+    <div
+      style={{
+        backgroundImage: "url('/back2.webp')", // Set the background image
+      }}
+      className="w-screen h-fit px-36"
+    >
       <div>
         <Spotlight
           className="-top-40 -left-10 md:-left-32 md:-top-20 h-screen"
@@ -83,6 +89,7 @@ const page = () => {
         />
         <Spotlight className="left-80 top-28 h-[80vh] w-[50vw]" fill="blue" />
       </div>
+
       <div className="flex flex-col justify-center items-center pt-24">
         <img src="/sigma-pedia.png" className="h-24 w-48" alt="" />
         <p className="uppercase tracking-widest text-xs text-center text-blue-100 max-w-80">
@@ -93,7 +100,7 @@ const page = () => {
         <ToolbarDynamic onSearchChange={handleSearchChange} />
       </div>
       <div className="w-full h-fit my-4 grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-8">
-      {searchResults.length === 0
+        {searchResults.length === 0
           ? postsData.map((post: Post, index: number) => (
               <motion.div
                 initial={{ opacity: 0 }}
@@ -115,9 +122,7 @@ const page = () => {
                   characters={post.characters}
                   readingTimeSeconds={post.readingTimeSeconds}
                   wordCount={post.wordCount}
-                  onBoxClick={(title) => {
-                    console.log("Clicked on box with id:", title);
-                  }}
+                  onBoxClick={() => router.push(`/wiki/${post.title}`)}
                 />
               </motion.div>
             ))
@@ -142,9 +147,7 @@ const page = () => {
                   characters={post.characters}
                   readingTimeSeconds={post.readingTimeSeconds}
                   wordCount={post.wordCount}
-                  onBoxClick={(id) => {
-                    console.log("Clicked on box with id:", id);
-                  }}
+                  onBoxClick={() => router.push(`/wiki/${post.title}`)}
                 />
               </motion.div>
             ))}

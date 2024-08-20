@@ -37,6 +37,7 @@ const Article = ({
 
   return (
     <Button
+      
       onClick={() => onBoxClick(title)}
       duration={Math.floor(Math.random() * 10000) + 10000}
       borderRadius="1.75rem"
