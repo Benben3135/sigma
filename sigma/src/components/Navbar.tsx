@@ -2,7 +2,7 @@
 
 import { Socials } from "@/app/constants";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useAuth, UserButton } from "@clerk/nextjs";
@@ -15,7 +15,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useRouter } from "next/navigation";
+import { useRouter , useSearchParams  } from "next/navigation";
 
 
 const Navbar = () => {
