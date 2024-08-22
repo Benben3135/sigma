@@ -1,10 +1,9 @@
-import React from 'react'
-import Loading from '@/components/Loading'
+import React from "react";
+import Loading from "@/components/Loading";
+import MainNav from "@/components/MainNav";
 
 const page = () => {
-  return (
-    <Loading/>
-  )
-}
+  return <MainNav />;
+};
 
-export default page
+export default page;

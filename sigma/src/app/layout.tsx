@@ -10,6 +10,7 @@ import {
 } from "@clerk/nextjs";
 import { ThemeProvider } from "./provider";
 import Navbar from "@/components/Navbar";
+import { NextUIProvider } from "@nextui-org/react";
 
 import { cn } from "@/lib/utils";
 import { QueryClientProvider } from "@tanstack/react-query";
@@ -50,10 +51,12 @@ export default function RootLayout({
               enableSystem
               disableTransitionOnChange
             >
-              <main>
-                <Navbar />
-                {children}
-              </main>
+              <NextUIProvider>
+                <main>
+                  <Navbar />
+                  {children}
+                </main>
+              </NextUIProvider>
             </ThemeProvider>
           </body>
         </html>
