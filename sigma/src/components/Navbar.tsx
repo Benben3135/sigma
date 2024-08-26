@@ -63,11 +63,6 @@ const Navbar = () => {
                   </Link>
                 </>
               }
-              <Link className="hidden sm:block" href={"/Challenges"}>
-                <h1 className="text-md hover:scale-105 transition-all ease-in-out">
-                  Challenges
-                </h1>
-              </Link>
               <Link className="hidden sm:block" href={"/Profile"}>
                 <h1 className="text-md hover:scale-105 transition-all ease-in-out">
                   Profile
