@@ -1,15 +1,20 @@
 import React, { useEffect, useRef, forwardRef } from 'react';
-import { Chart as ChartJS } from 'chart.js';
-import type { ChartType, DefaultDataPoint } from 'chart.js';
-
-import type { ForwardedRef, ChartProps, BaseChartComponent } from '@/app/types.js';
 import {
-  reforwardRef,
-  cloneData,
-  setOptions,
-  setLabels,
-  setDatasets,
-} from '@/app/utils/charts';
+  Chart as ChartJS,
+  BarController,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js';
+import type { ChartType, DefaultDataPoint } from 'chart.js';
+import type { ForwardedRef, ChartProps, BaseChartComponent } from '@/app/types.js';
+import { reforwardRef, cloneData, setOptions, setLabels, setDatasets } from '@/app/utils/charts';
+
+// Register the necessary controllers and elements for the bar chart
+ChartJS.register(BarController, BarElement, CategoryScale, LinearScale, Title, Tooltip, Legend);
 
 function ChartComponent<
   TType extends ChartType = ChartType,
@@ -31,14 +36,14 @@ function ChartComponent<
     fallbackContent,
     updateMode,
     ...canvasProps
-  } = props as ChartProps;
+  } = props as ChartProps<TType, TData, TLabel>;
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const chartRef = useRef<ChartJS | null>();
+  const chartRef = useRef<ChartJS<TType, TData, TLabel> | null>(null);
 
   const renderChart = () => {
     if (!canvasRef.current) return;
 
-    chartRef.current = new ChartJS(canvasRef.current, {
+    chartRef.current = new ChartJS<TType, TData, TLabel>(canvasRef.current, {
       type,
       data: cloneData(data, datasetIdKey),
       options: options && { ...options },
@@ -102,7 +107,7 @@ function ChartComponent<
   return (
     <canvas
       ref={canvasRef}
-      role='img'
+      role="img"
       height={height}
       width={width}
       {...canvasProps}

@@ -10,7 +10,7 @@ interface LayoutProps {
 
 export default function Layout({ children, user }: LayoutProps) {
   return (
-    <div className="flex flex-col h-screen w-screen">
+    <div className="flex flex-col h-fit w-screen">
       <Navbar />
       <div className="flex flex-row w-full h-full">
         <DashboardSideBar />

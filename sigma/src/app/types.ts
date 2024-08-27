@@ -91,3 +91,25 @@ export type TypedChartComponent<TDefaultType extends ChartType> = <
     ref?: ForwardedRef<ChartJSOrUndefined<TDefaultType, TData, TLabel>>;
   }
 ) => JSX.Element;
+
+
+
+export interface ChartDataInterface<TType extends ChartType = 'bar' | 'line'> {
+  labels: string[]; // Array of labels for the x-axis
+  datasets: Array<{
+    label: string; // Label for the dataset
+    data: number[]; // Data points for the dataset
+    backgroundColor?: string | string[]; // Background color of the bars/points
+    borderColor?: string | string[]; // Border color of the bars/points
+    borderWidth?: number; // Border width of the bars/points
+  }>;
+}
+
+// Interface for the options
+export interface ChartOptionsInterface<TType extends ChartType = 'bar' | 'line'> extends ChartOptions<TType> {
+  scales?: {
+    y?: {
+      beginAtZero?: boolean; // Whether to start the y-axis at zero
+    };
+  };
+}
