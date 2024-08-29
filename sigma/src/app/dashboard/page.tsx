@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import ChartComponent from "@/components/ChartComponent";
 import { ChartDataInterface, ChartOptionsInterface } from "@/app/types";
+import { useUser } from "@clerk/nextjs";
 
 export enum ProgressView {
   Week = "week",
@@ -13,9 +14,10 @@ export enum ProgressView {
 }
 
 export default function Page() {
-  const [progressView, setProgressView] = useState<ProgressView>(
-    ProgressView.Week
-  );
+  const { user } = useUser();
+  const email = user?.emailAddresses[0]?.emailAddress;
+
+  const [progressView, setProgressView] = useState<ProgressView>(ProgressView.Week);
 
   const options: ChartOptionsInterface = {
     scales: {
@@ -27,21 +29,25 @@ export default function Page() {
 
   const { data: weekData, error: weekDataError, isLoading: weekDataLoading } = useQuery({
     queryKey: ["week"],
-    queryFn: () => axios.get("http://localhost:3001/data/week").then((res) => res.data),
-    enabled: progressView === ProgressView.Week,
+    queryFn: () => axios.get(`http://localhost:3001/data?email=${email}&lapse=week`).then((res) => res.data),
+    enabled: progressView === ProgressView.Week && !!email,
   });
 
   const { data: monthData, error: monthDataError, isLoading: monthDataLoading } = useQuery({
     queryKey: ["month"],
-    queryFn: () => axios.get("http://localhost:3001/data/month").then((res) => res.data),
-    enabled: progressView === ProgressView.Month,
+    queryFn: () => axios.get(`http://localhost:3001/data?email=${email}&lapse=month`).then((res) => res.data),
+    enabled: progressView === ProgressView.Month && !!email,
   });
 
   const { data: yearData, error: yearDataError, isLoading: yearDataLoading } = useQuery({
     queryKey: ["year"],
-    queryFn: () => axios.get("http://localhost:3001/data/year").then((res) => res.data),
-    enabled: progressView === ProgressView.Year,
+    queryFn: () => axios.get(`http://localhost:3001/data?email=${email}&lapse=year`).then((res) => res.data),
+    enabled: progressView === ProgressView.Year && !!email,
   });
+
+  useEffect(() => {
+    console.log("weekData:",weekData)
+  },[weekData])
 
   // Determine the data to pass based on the selected view
   const getData = () => {
@@ -70,42 +76,36 @@ export default function Page() {
                   Your {progressView} progress
                 </h1>
                 <div className="w-fit h-fit flex flex-row justify-center items-center">
-                  <div className="w-fit h-fit">
-                    <button
-                      onClick={() => setProgressView(ProgressView.Week)}
-                      className={
-                        progressView === ProgressView.Week
-                          ? "w-fit h-fit p-2 border border-violet-400 bg-violet-400"
-                          : "w-fit text-violet-400 h-fit p-2 border border-white-100"
-                      }
-                    >
-                      Week
-                    </button>
-                  </div>
-                  <div className="w-fit h-fit">
-                    <button
-                      onClick={() => setProgressView(ProgressView.Month)}
-                      className={
-                        progressView === ProgressView.Month
-                          ? "w-fit h-fit p-2 border border-violet-400 bg-violet-400"
-                          : "w-fit text-violet-400 h-fit p-2 border border-white-100"
-                      }
-                    >
-                      Month
-                    </button>
-                  </div>
-                  <div className="w-fit h-fit">
-                    <button
-                      onClick={() => setProgressView(ProgressView.Year)}
-                      className={
-                        progressView === ProgressView.Year
-                          ? "w-fit h-fit p-2 border border-violet-400 bg-violet-400"
-                          : "w-fit text-violet-400 h-fit p-2 border border-white-100"
-                      }
-                    >
-                      Year
-                    </button>
-                  </div>
+                  <button
+                    onClick={() => setProgressView(ProgressView.Week)}
+                    className={
+                      progressView === ProgressView.Week
+                        ? "w-fit h-fit p-2 border border-violet-400 bg-violet-400"
+                        : "w-fit text-violet-400 h-fit p-2 border border-white-100"
+                    }
+                  >
+                    Week
+                  </button>
+                  <button
+                    onClick={() => setProgressView(ProgressView.Month)}
+                    className={
+                      progressView === ProgressView.Month
+                        ? "w-fit h-fit p-2 border border-violet-400 bg-violet-400"
+                        : "w-fit text-violet-400 h-fit p-2 border border-white-100"
+                    }
+                  >
+                    Month
+                  </button>
+                  <button
+                    onClick={() => setProgressView(ProgressView.Year)}
+                    className={
+                      progressView === ProgressView.Year
+                        ? "w-fit h-fit p-2 border border-violet-400 bg-violet-400"
+                        : "w-fit text-violet-400 h-fit p-2 border border-white-100"
+                    }
+                  >
+                    Year
+                  </button>
                 </div>
               </div>
 
@@ -124,17 +124,3 @@ export default function Page() {
     </div>
   );
 }
-
-
-// const data: ChartDataInterface = {
-//   labels: ["January", "February", "March", "April", "May"],
-//   datasets: [
-//     {
-//       label: "Sales",
-//       data: [300, 400, 200, 500, 700],
-//       backgroundColor: "rgba(75,192,192,0.4)",
-//       borderColor: "rgba(75,192,192,1)",
-//       borderWidth: 1,
-//     },
-//   ],
-// };

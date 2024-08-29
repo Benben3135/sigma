@@ -13,6 +13,7 @@ import { Spotlight } from "@/components/ui/Spotlight";
 import {z, ZodError} from "zod"
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import Loading from "@/components/Loading";
 
 const page = () => {
   const { user } = useUser();
@@ -29,6 +30,7 @@ const page = () => {
   const [target, setTarget] = useState<string>("");
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [loading, setLoading] = useState<boolean>(false);
 
   const Schema = z.object({
     weight: z.string().regex(/^\d+$/, { message: "Weight must be a string containing only numbers" }).min(1, { message: "Weight must be at least 1 character long" }),
@@ -77,7 +79,7 @@ const page = () => {
         sleep: parsedSleep,
         target: parsedTarget,
       });
-  
+      
       console.log('Response from server:', createNewUser);
       if(createNewUser.status === 201) {
         setPage(5);
@@ -95,6 +97,22 @@ const page = () => {
     }
   };
 
+  const initializeData = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.post("http://localhost:3001/data", {
+        email,
+      });
+      debugger;
+      console.log('Response from server:', response);
+      if(response.status === 201) {
+        router.push("/dashboard");
+      }
+    } catch (error) {
+      console.error('An unexpected error occurred:', error);
+    }
+  }
+
   const handleBoxClick1 = (index: number) => {
     setSelected1((prevSelected) => {
       // Check if index is already selected
@@ -107,6 +125,10 @@ const page = () => {
       }
     });
   };
+
+  if(loading) {
+    return <Loading />
+  }
 
   return (
     <div className="w-screen h-screen flex flex-col justify-center items-center">
@@ -313,7 +335,7 @@ const page = () => {
               </p>
 
               <MagicButton
-                handleClick={() => router.push("/dashboard")}
+                handleClick={() => initializeData()}
                 title="let's go."
                 icon={<FaAngleRight />}
                 position="right"
