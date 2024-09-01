@@ -119,12 +119,12 @@ const DashboardSideBar = () => {
             <div
               key={index}
               className="w-full"
-              onClick={() => setActiveTab(index + 1)}
+              onClick={() => setActiveTab(index + 7)}
             >
               <Link href={tab.href}>
                 <div
                   className={
-                    activeTab == index + 1
+                    activeTab == index + 7
                       ? "text-white bg-gradient-to-r from-indigo-400 to-transparent py-3 text-md font-bold antialiased hover:text-yellow-400 w-full h-fit flex flex-row justify-start pl-12 items-center gap-2"
                       : "text-white text-md font-bold py-3 antialiased hover:text-yellow-400 w-full h-fit flex flex-row justify-start pl-12 items-center gap-2"
                   }
