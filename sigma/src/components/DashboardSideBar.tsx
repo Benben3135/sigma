@@ -3,17 +3,48 @@
 import { useUser } from "@clerk/nextjs";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaBurger, FaClock, FaLocationArrow, FaPills } from "react-icons/fa6";
 import { MdOutlineSportsGymnastics } from "react-icons/md";
 import { SiProgress } from "react-icons/si";
 import { FaUserFriends } from "react-icons/fa";
 import { FaRegEnvelope } from "react-icons/fa";
 import { FaPeopleGroup } from "react-icons/fa6";
+import { usePathname } from 'next/navigation'
 
 const DashboardSideBar = () => {
   const [activeTab, setActiveTab] = useState(0);
   const { user } = useUser();
+
+  const path = usePathname(); // Get the path
+  useEffect(() => {
+    if (path == "/dashboard") {
+      setActiveTab(0);
+    } else if (path == "/dashboard/challenges") {
+      setActiveTab(1);
+    } else if (path == "/dashboard/alarm") {
+      setActiveTab(2);
+    } else if (path == "/dashboard/nutrition") {
+      setActiveTab(3);
+    } else if (path == "/dashboard/workouts") {
+      setActiveTab(4);
+    } else if (path == "/dashboard/progress") {
+      setActiveTab(5);
+    } else if (path == "/dashboard/friends") {
+      setActiveTab(6);
+    } else if (path == "/dashboard/messages") {
+      setActiveTab(7);
+    } else if (path == "/dashboard/groups") {
+      setActiveTab(8);
+    } else if (path == "/dashboard/settings") {
+      setActiveTab(9);
+    } else if (path == "/dashboard/help") {
+      setActiveTab(10);
+    } else if (path == "/dashboard/logout") {
+      setActiveTab(11);
+    }
+  }, [path]);
+
 
   const tabs1 = [
     {

@@ -189,9 +189,9 @@ export default function Page() {
             {greeting}
           </h1>
         </div>
-        <div className="w-full h-fit flex xl:flex-row flex-col gap-4 mt-6">
+        <div className="w-full h-fit flex 2xl:flex-row justify-center items-center flex-col gap-4 mt-6">
           {data ? (
-            <div className="w-fit h-fit">
+            <div className="w-fit h-fit max-w-full p-4">
               <div className="w-full h-full p-3 flex flex-col gap-3 justify-start items-start">
                 <div className="flex flex-row justify-start items-start gap-4">
                   <h1 className="text-white-100 text-2xl font-bold antialiased">
@@ -345,6 +345,9 @@ export default function Page() {
               )}
             </div>
           </section>
+        </div>
+        <div className="w-full h-fit flex 2xl:flex-row flex-col justify-center items-center">
+            
         </div>
       </div>
     </div>
