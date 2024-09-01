@@ -231,7 +231,7 @@ export default function Page() {
                   </div>
                 </div>
 
-                <section className="w-full flex-1 min-w-[50rem] border-violet-950 border">
+                <section className="w-full flex-1 min-w-[50rem] border">
                   <ChartComponent
                     data={data}
                     options={options}
