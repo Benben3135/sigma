@@ -103,16 +103,15 @@ export default function Page() {
   const dayData = dayDataArray?.[0];
 
   const dailyRank = (dayData: any) => {
-    if (!dayData) return 0; // Handle missing dayData case
+    if (!dayData) return 0;
 
     const { food = 0, learning = 0, reading = 0, workout = 0 } = dayData;
     const total = food + learning + reading + workout;
     const average = total / 4;
 
-    return Math.round(average);
+    return Math.min(Math.round(average), 100); // Ensure the rank doesn't exceed 100
   };
 
-  // Determine the data to pass based on the selected view
   const getData = () => {
     switch (progressView) {
       case ProgressView.Week:
@@ -128,29 +127,19 @@ export default function Page() {
 
   const getColor = (rank: number) => {
     if (rank < 40) {
-      return "bg-gradient-to-r from-red-500 via-yellow-500 to-red-500 inline-block text-transparent bg-clip-text";
+      return "text-red-500";
     } else if (rank >= 40 && rank < 60) {
-      return "bg-gradient-to-r from-yellow-500 via-indigo-500 to-yellow-500 inline-block text-transparent bg-clip-text";
+      return "text-yellow-500";
     } else if (rank >= 60 && rank < 80) {
-      return "bg-gradient-to-r from-yellow-500 via-green-500 to-indigo-500 inline-block text-transparent bg-clip-text";
+      return "text-blue-500";
     } else if (rank >= 80) {
-      return "bg-gradient-to-r from-green-400 via-green-500 to-green-400 inline-block text-transparent bg-clip-text";
+      return "text-green-500";
     }
   };
 
   const data = getData();
 
   useEffect(() => {
-    // Function to determine if current time is before target time
-    const isBeforeTargetTime = (hour: number, minute: number) => {
-      const now = new Date();
-      return (
-        now.getHours() < hour ||
-        (now.getHours() === hour && now.getMinutes() < minute)
-      );
-    };
-
-    // Update greeting
     const updateGreeting = () => {
       if (isBeforeTargetTime(9, 0)) {
         setGreeting(`Good morning ${user?.firstName}!`);
@@ -163,10 +152,9 @@ export default function Page() {
       }
     };
 
-    // Update warning
     const updateWarning = () => {
       if (isBeforeTargetTime(9, 0)) {
-        setWarning("Good morning! Start your day by logging your progress");
+        setWarning("Start your day by logging your progress");
       } else if (isBeforeTargetTime(12, 0)) {
         setWarning("Being sleepy today?");
       } else if (isBeforeTargetTime(18, 0)) {
@@ -176,178 +164,216 @@ export default function Page() {
       }
     };
 
-    // Set greeting and warning
     updateGreeting();
     updateWarning();
   }, [user]);
 
   return (
-    <div className="w-full h-fit p-6">
-      <div className="w-full h-full flex flex-col items-center justify-center gap-6">
-        <div className="w-full h-fit items-center justify-center">
-          <h1 className="text-4xl font-bold text-white-100 antialiased text-center">
-            {greeting}
-          </h1>
-        </div>
-        <div className="w-full h-fit flex 2xl:flex-row justify-center items-center flex-col gap-4 mt-6">
-          {data ? (
-            <div className="w-fit h-fit max-w-full p-4">
-              <div className="w-full h-full p-3 flex flex-col gap-3 justify-start items-start">
-                <div className="flex flex-row justify-start items-start gap-4">
-                  <h1 className="text-white-100 text-2xl font-bold antialiased">
-                    Your {progressView} progress
-                  </h1>
-                  <div className="w-fit h-fit flex flex-row justify-center items-center">
-                    <button
-                      onClick={() => setProgressView(ProgressView.Week)}
-                      className={
-                        progressView === ProgressView.Week
-                          ? "w-fit h-fit p-2 border border-violet-400 bg-violet-400"
-                          : "w-fit text-violet-400 h-fit p-2 border border-white-100"
-                      }
-                    >
-                      Week
-                    </button>
-                    <button
-                      onClick={() => setProgressView(ProgressView.Month)}
-                      className={
-                        progressView === ProgressView.Month
-                          ? "w-fit h-fit p-2 border border-violet-400 bg-violet-400"
-                          : "w-fit text-violet-400 h-fit p-2 border border-white-100"
-                      }
-                    >
-                      Month
-                    </button>
-                    <button
-                      onClick={() => setProgressView(ProgressView.Year)}
-                      className={
-                        progressView === ProgressView.Year
-                          ? "w-fit h-fit p-2 border border-violet-400 bg-violet-400"
-                          : "w-fit text-violet-400 h-fit p-2 border border-white-100"
-                      }
-                    >
-                      Year
-                    </button>
-                  </div>
-                </div>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+      <div className="space-y-12">
+        <h1 className="text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-indigo-400 to-pink-600 text-center mb-4 pb-4 z-10">
+          {greeting}
+        </h1>
 
-                <section className="w-full flex-1 min-w-[50rem] border">
-                  <ChartComponent
-                    data={data}
-                    options={options}
-                    height={400}
-                    width={800}
-                  />
-                </section>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <div className="lg:col-span-2 bg-gray-800 rounded-lg shadow-lg p-6">
+            <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
+              <h2 className="text-2xl font-semibold text-white mb-4 sm:mb-0">
+                Your {progressView} progress
+              </h2>
+              <div className="flex space-x-2">
+                {["Week", "Month", "Year"].map((view) => (
+                  <button
+                    key={view}
+                    onClick={() =>
+                      setProgressView(
+                        ProgressView[view as keyof typeof ProgressView]
+                      )
+                    }
+                    className={`px-4 py-2 rounded-md transition-colors ${
+                      progressView ===
+                      ProgressView[view as keyof typeof ProgressView]
+                        ? "bg-violet-600 text-white"
+                        : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                    }`}
+                  >
+                    {view}
+                  </button>
+                ))}
               </div>
             </div>
-          ) : (
-            <Skeleton className="w-full h-[25rem]" /> // Adjust the height of the skeleton to match the intended chart area
-          )}
-          <section className="min-w-[20rem] w-fit h-[15rem] mt-6">
-            <div className="w-full h-full">
-              {dayDataLoading ? (
-                <Skeleton className="w-full h-full" />
-              ) : (
-                <>
-                  {dayData == null ? (
-                    <div className="w-full h-full bg-black-200 rounded-md">
-                      <div className="w-full h-full p-3 flex flex-col gap-4 items-center justify-start relative">
-                        <p className="text-white-100 text-lg font-semibold antialiased">
-                          {warning}
-                        </p>
-                        <FloatingBear />
-                      </div>
+            {data ? (
+              <ChartComponent
+                data={data}
+                options={options}
+                height={400}
+                width={800}
+                className="h-80"
+              />
+            ) : (
+              <Skeleton className="w-full h-80 rounded-lg" />
+            )}
+          </div>
+
+          <div className="bg-gray-800 rounded-lg shadow-lg p-6 transition-all duration-300 hover:shadow-xl">
+            {dayDataLoading || !dayData ? (
+              <Skeleton className="w-full h-full rounded-lg animate-pulse" />
+            ) : dayData == null ? (
+              <div className="flex flex-col items-center justify-center h-full space-y-4">
+                <p className="text-xl text-white text-center font-semibold">{warning}</p>
+                <FloatingBear />
+              </div>
+            ) : (
+              <div className="space-y-6">
+                <h2 className="text-2xl font-bold text-white text-center mb-6">
+                  Today's Progress
+                </h2>
+                {["Nutrition", "Learning", "Reading", "Workout"].map(
+                  (activity) => (
+                    <div
+                      key={activity}
+                      className="flex justify-between items-center bg-gray-700 p-3 rounded-lg transition-all duration-200 hover:bg-gray-600"
+                    >
+                      <span className="text-lg text-gray-200 font-medium">{activity}</span>
+                      <span
+                        className={`text-lg font-bold ${getColor(
+                          Math.min(dayData[activity.toLowerCase()], 100)
+                        )}`}
+                      >
+                        <AnimatedNumber
+                          target={Math.min(
+                            dayData[activity.toLowerCase()],
+                            100
+                          )}
+                          duration={500}
+                        />
+                        %
+                      </span>
                     </div>
-                  ) : (
-                    <div className="w-full h-full bg-black-200 rounded-md">
-                      <div className="w-full h-full p-3 flex flex-col gap-4 items-center justify-start">
-                        <h1 className="text-white-100 text-2xl font-bold antialiased">
-                          Today's progress
-                        </h1>
-                        <div className="w-full h-fit flex flex-col justify-start items-start">
-                          <div className="w-full h-fit flex flex-row justify-between items-center">
-                            <h2 className="text-white-100 text-lg font-semibold antialiased">
-                              Nutrition
-                            </h2>
-                            <p
-                              className={`text-lg font-bold ${getColor(
-                                dayData?.food
-                              )}`}
-                            >
-                              <AnimatedNumber
-                                target={dayData?.food}
-                                duration={500}
-                              />
-                            </p>
-                          </div>
-                          <div className="w-full h-fit flex flex-row justify-between items-center">
-                            <h2 className="text-white-100 text-lg font-semibold antialiased">
-                              learning
-                            </h2>
-                            <p
-                              className={`text-lg font-bold ${getColor(
-                                dayData?.learning
-                              )}`}
-                            >
-                              <AnimatedNumber
-                                target={dayData?.learning}
-                                duration={500}
-                              />
-                            </p>
-                          </div>
-                          <div className="w-full h-fit flex flex-row justify-between items-center">
-                            <h2 className="text-white-100 text-lg font-semibold antialiased">
-                              reading
-                            </h2>
-                            <p
-                              className={`text-lg font-bold ${getColor(
-                                dayData?.reading
-                              )}`}
-                            >
-                              <AnimatedNumber
-                                target={dayData?.reading}
-                                duration={500}
-                              />
-                            </p>
-                          </div>
-                          <div className="w-full h-fit flex flex-row justify-between items-center">
-                            <h2 className="text-white-100 text-lg font-semibold antialiased">
-                              workout
-                            </h2>
-                            <p
-                              className={`text-lg font-bold ${getColor(
-                                dayData?.workout
-                              )}`}
-                            >
-                              <AnimatedNumber
-                                target={dayData?.workout}
-                                duration={500}
-                              />
-                            </p>
-                          </div>
-                        </div>
-                        <div className="w-full h-[1px] bg-slate-500"></div>
-                        <div className="w-full h-fit flex flex-row justify-between items-center text-2xl font-bold antialiased">
-                          <h1 className="text-yellow-300 antialiased">RANK</h1>
-                          <h1 className={`${getColor(dailyRank(dayData))}`}>
-                            <AnimatedNumber
-                              target={dailyRank(dayData)}
-                              duration={1000}
-                            />
-                            <span className="text-white-100">/100</span>
-                          </h1>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                </>
-              )}
-            </div>
-          </section>
+                  )
+                )}
+                <div className="border-t border-gray-600 pt-6 mt-6">
+                  <div className="flex justify-between items-center bg-gradient-to-r from-yellow-400 to-yellow-600 p-4 rounded-lg">
+                    <span className="text-xl font-bold text-gray-800">
+                      DAILY RANK
+                    </span>
+                    <span
+                      className={`text-2xl font-extrabold ${getColor(
+                        dailyRank(dayData)
+                      )}`}
+                    >
+                      <AnimatedNumber
+                        target={dailyRank(dayData)}
+                        duration={1000}
+                      />
+                      <span className="text-gray-700 text-xl">/100</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
-        <div className="w-full h-fit flex 2xl:flex-row flex-col justify-center items-center">
-            
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div
+            className="bg-gradient-to-br from-purple-600 to-blue-500 rounded-lg shadow-lg p-8 cursor-pointer hover:scale-105 transition-transform duration-300 relative overflow-hidden group"
+            onClick={() => (window.location.href = "/dashboard/challenges")}
+            style={{
+              backgroundImage: "url('/challenges-bg.jpg')",
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600/80 to-blue-500/80 group-hover:opacity-90 transition-opacity duration-300"></div>
+            <div className="relative z-10">
+              <h2 className="text-3xl font-bold text-white text-center mb-4">
+                Challenges
+              </h2>
+              <p className="text-white text-center opacity-80">
+                Push your limits and conquer new heights
+              </p>
+              <div className="absolute bottom-4 right-4">
+                <svg className="w-8 h-8 text-white opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            className="bg-gradient-to-br from-green-500 to-teal-400 rounded-lg shadow-lg p-8 cursor-pointer hover:scale-105 transition-transform duration-300 relative overflow-hidden group"
+            onClick={() => (window.location.href = "/dashboard/nutrition")}
+            style={{
+              backgroundImage: "url('/nutrition-bg.jpg')",
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-green-500/80 to-teal-400/80 group-hover:opacity-90 transition-opacity duration-300"></div>
+            <div className="relative z-10">
+              <h2 className="text-3xl font-bold text-white text-center mb-4">
+                Nutrition
+              </h2>
+              <p className="text-white text-center opacity-90 font-semibold text-lg shadow-sm">
+                Fuel your body with the right choices
+              </p>
+              <div className="absolute bottom-4 right-4">
+                <svg className="w-8 h-8 text-white opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-8">
+          <div
+            className="bg-gradient-to-br from-orange-500 to-red-400 rounded-lg shadow-lg p-8 cursor-pointer hover:scale-105 transition-transform duration-300 relative overflow-hidden group"
+            onClick={() => (window.location.href = "/dashboard/alarm")}
+            style={{
+              backgroundImage: "url('/alarm-bg.jpg')",
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-orange-500/80 to-yellow-400/80 group-hover:opacity-90 transition-opacity duration-300"></div>
+            <div className="relative z-10">
+              <h2 className="text-3xl font-bold text-white text-center mb-4">
+                Alarm
+              </h2>
+              <p className="text-white text-center opacity-90 font-semibold text-lg shadow-sm">
+                Wake up refreshed and ready to conquer the day
+              </p>
+              <div className="absolute bottom-4 right-4">
+                <svg className="w-8 h-8 text-white opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+            </div>
+          </div>
+          <div
+            className="bg-gradient-to-br from-purple-500 to-pink-400 rounded-lg shadow-lg p-8 cursor-pointer hover:scale-105 transition-transform duration-300 relative overflow-hidden group"
+            onClick={() => (window.location.href = "/dashboard/soul")}
+            style={{
+              backgroundImage: "url('/soul-bg.jpg')",
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+            }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/80 to-pink-400/80 group-hover:opacity-90 transition-opacity duration-300"></div>
+            <div className="relative z-10">
+              <h2 className="text-3xl font-bold text-white text-center mb-4">
+                Soul
+              </h2>
+              <p className="text-white text-center opacity-90 font-semibold text-lg shadow-sm">
+                Nourish your spirit and find inner peace
+              </p>
+              <div className="absolute bottom-4 right-4">
+                <svg className="w-8 h-8 text-white opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+                </svg>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

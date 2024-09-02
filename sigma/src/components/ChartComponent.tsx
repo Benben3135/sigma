@@ -13,23 +13,31 @@ interface ChartComponentProps {
 const ChartComponent: React.FC<ChartComponentProps> = ({
   data,
   options,
-  height,  // We remove the default values here for better flexibility with className
-  width,   // We remove the default values here for better flexibility with className
+  height,
+  width,
   className,
 }) => {
   return (
-    <div
-      className={`relative ${className}`}
-      style={{ width: width ? `${width}px` : "100%", height: height ? `${height}px` : "100%" }}
-    >
+    <div className={className}>
       <Chart
         type="bar"
         data={data}
         options={{
           responsive: true,
           maintainAspectRatio: false,
-          ...options, // Spread the additional options
+          scales: {
+            x: {
+              ticks: {
+                autoSkip: true,
+                maxRotation: 0,
+                minRotation: 0,
+              },
+            },
+          },
+          ...options,
         }}
+        height={height}
+        width={width}
       />
     </div>
   );

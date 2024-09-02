@@ -6,7 +6,7 @@ import React from "react";
 import Article from "./Article";
 import { useRouter } from "next/navigation";
 import { Spotlight } from "./ui/Spotlight";
-import { FaClock } from "react-icons/fa6";
+import { FaClock, FaBookOpen, FaCalendarAlt } from "react-icons/fa";
 
 interface ArticlePageProps {
   post: Post;
@@ -19,11 +19,14 @@ const ArticlePage = ({ post, articles }: ArticlePageProps) => {
 
   return (
     <div
-    style={{
-      backgroundImage: "url('/back2.webp')", // Set the background image
-    }}
-    className="w-full h-full overflow-x-hidden overflow-y-scroll py-24 px-20">
-      <div>
+      style={{
+        backgroundImage: "url('/back2.webp')",
+        backgroundAttachment: "fixed",
+        backgroundSize: "cover",
+      }}
+      className="min-h-screen w-full overflow-x-hidden py-24 px-4 md:px-12 lg:px-20"
+    >
+      <div className="fixed inset-0 z-0">
         <Spotlight
           className="-top-40 -left-10 md:-left-32 md:-top-20 h-screen"
           fill="white"
@@ -35,89 +38,83 @@ const ArticlePage = ({ post, articles }: ArticlePageProps) => {
         <Spotlight className="left-80 top-28 h-[80vh] w-[50vw]" fill="blue" />
       </div>
 
-      <div
-      className="w-full h-fit flex flex-col md:flex-row justify-center items-start">
-        <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
-        className="h-fit flex flex-col justify-start items-start flex-1">
-          <h1 className="text-4xl font-bold text-white-100">{post.title}</h1>
-          <p className="uppercase tracking-widest text-xs text-center text-blue-100 max-w-80 mt-1">
-            {post.subTitle}
-          </p>
-          <div className="w-fit h-fit">
-          <div className="flex flex-row justify-center items-center w-fit mt-2 gap-1">
-            <FaClock className="scale-75"/>
-            <p className="text-white-100 font-semibold text-xs">{readingTime}m</p>
-          </div>
-          </div>
-          <div
-            className="max-w-[100ch] mt-8"
-            dangerouslySetInnerHTML={{ __html: post.content }}
-          />
-        </motion.div>
-        <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.4 }}
-        className="flex-1 h-full flex flex-col md:justify-start md:items-start md:pl-24 md:pt-24 mt-12 md:mt-0 justify-center items-center">
-          <img
-            src={post.img}
-            alt={post.title}
-            className="w-96 h-96 rounded-md"
-          />
-          <div className="flex flex-col justify-start items-start mt-4">
-            <p className="text-white-100 font-semibold">Field: {post.field.toLocaleLowerCase()}</p>
-            <p className="text-white-100 font-semibold">
-              Sub-Field: {post.subField.toLocaleLowerCase()}
-            </p>
-          </div>
-        </motion.div>
-      </div>
       <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: 0.6 }}
-      className="w-full px-8 h-[1px] bg-gray-600 mt-8 mb-4"></motion.div>
-      <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      transition={{ delay: 0.8 }}
-      className="w-full h-fit">
-        {" "}
-        <div className="w-full h-fit justify-start items-start">
-          <h1 className="text-3xl font-bold text-white-100">
-            Another {post.subField.toLocaleLowerCase()} topics
-          </h1>
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="relative z-10 bg-black bg-opacity-50 rounded-xl shadow-2xl p-8 mb-12"
+      >
+        <div className="flex flex-col md:flex-row justify-between items-start gap-12">
+          <div className="flex-1">
+            <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">{post.title}</h1>
+            <p className="text-lg text-blue-300 mb-6">{post.subTitle}</p>
+            <div className="flex flex-wrap gap-4 mb-8">
+              <div className="flex items-center text-yellow-400">
+                <FaClock className="mr-2" />
+                <span>{readingTime} min read</span>
+              </div>
+              <div className="flex items-center text-green-400">
+                <FaBookOpen className="mr-2" />
+                <span>{post.wordCount} words</span>
+              </div>
+              <div className="flex items-center text-purple-400">
+                <FaCalendarAlt className="mr-2" />
+                <span>{new Date(post.created).toLocaleDateString()}</span>
+              </div>
+            </div>
+            <div
+              className="prose prose-lg prose-invert max-w-none"
+              dangerouslySetInnerHTML={{ __html: post.content }}
+            />
+          </div>
+          <div className="md:w-1/3">
+            <img
+              src={post.img}
+              alt={post.title}
+              className="w-full h-auto rounded-lg shadow-lg mb-6"
+            />
+            <div className="bg-gray-800 bg-opacity-50 p-4 rounded-lg">
+              <p className="text-white font-semibold mb-2">Field: <span className="text-blue-300">{post.field}</span></p>
+              <p className="text-white font-semibold">Sub-Field: <span className="text-purple-300">{post.subField}</span></p>
+            </div>
+          </div>
+        </div>
+      </motion.div>
 
-          <div className="w-full h-fit my-4 grid grid-cols-[repeat(auto-fill,minmax(250px,1fr))] gap-8">
-            {articles.map((article: Post, index: number) => (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: index * 0.1 }}
-                key={article._id}
-                className="p-4 mt-4"
-              >
-                <Article
-                  _id={article._id}
-                  field={article.field}
-                  subField={article.subField}
-                  title={article.title}
-                  subTitle={article.subTitle}
-                  content={article.content}
-                  img={article.img}
-                  created={article.created}
-                  updated={article.updated}
-                  characters={article.characters}
-                  readingTimeSeconds={article.readingTimeSeconds}
-                  wordCount={article.wordCount}
-                  onBoxClick={() => router.push(`/wiki/${article.title}`)}
-                />
-              </motion.div>
-            ))}
-          </div>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.2 }}
+        className="relative z-10"
+      >
+        <h2 className="text-3xl font-bold text-white mb-8">
+          More on {post.subField}
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {articles.map((article: Post, index: number) => (
+            <motion.div
+              key={article._id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: index * 0.1 }}
+            >
+              <Article
+                _id={article._id}
+                field={article.field}
+                subField={article.subField}
+                title={article.title}
+                subTitle={article.subTitle}
+                content={article.content}
+                img={article.img}
+                created={article.created}
+                updated={article.updated}
+                characters={article.characters}
+                readingTimeSeconds={article.readingTimeSeconds}
+                wordCount={article.wordCount}
+                onBoxClick={() => router.push(`/wiki/${article.title}`)}
+              />
+            </motion.div>
+          ))}
         </div>
       </motion.div>
     </div>
