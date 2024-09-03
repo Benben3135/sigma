@@ -168,6 +168,10 @@ export default function Page() {
     updateWarning();
   }, [user]);
 
+  useEffect(() => {
+    console.log(dayData);
+  }, ["dayData", dayData]);
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
       <div className="space-y-12">
@@ -216,11 +220,14 @@ export default function Page() {
           </div>
 
           <div className="bg-gray-800 rounded-lg shadow-lg p-6 transition-all duration-300 hover:shadow-xl">
-            {dayDataLoading || !dayData ? (
+            {dayDataLoading ? (
               <Skeleton className="w-full h-full rounded-lg animate-pulse" />
-            ) : dayData == null ? (
-              <div className="flex flex-col items-center justify-center h-full space-y-4">
-                <p className="text-xl text-white text-center font-semibold">{warning}</p>
+            ) : !dayData || dayData === null || dayData === undefined || dayData === "undefined" ? (
+              <div className="flex flex-col items-center justify-center h-full space-y-6">
+                <p className="text-2xl text-white text-center font-bold">{warning}</p>
+                <div className="bg-gray-700 p-6 rounded-lg shadow-md">
+                  <p className="text-lg text-gray-300 mb-4">No data available for today. Start tracking your activities to see your progress!</p>
+                </div>
                 <FloatingBear />
               </div>
             ) : (
