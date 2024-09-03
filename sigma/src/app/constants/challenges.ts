@@ -6,129 +6,185 @@ import { FaBrain, FaCarrot, FaCookie, FaDumbbell, FaHandsHolding, FaLeaf } from 
 export const challenges = [
   {
     title: "30-day-water-challenge",
+    titleReadable: "30 Days Water Challenge",
     description: "Drink 8 glasses of water daily for 30 days to improve hydration and overall health.",
+    fullDescription: "Track your daily water intake, aiming for 8 glasses. Use a water bottle with measurements to help you stay on track. Set reminders throughout the day.",
     icon: FaWater,
     bgColor: "bg-blue-600",
     bgImage: "/challenges/water-challenge-bg.jpg",
     duration: "30 days",
-    progress: 0
+    durationInDays: 30,
+    progress: 0,
+    difficulty: "medium"
   },
   {
     title: "meditation-marathon",
+    titleReadable: "Meditation Marathon",
     description: "Practice meditation for 30 minutes daily for a month to reduce stress and improve focus.",
+    fullDescription: "Start with guided meditations. Gradually increase duration. Try different techniques like mindfulness, loving-kindness, or body scan. Keep a meditation journal.",
     icon: GiMeditation,
     bgColor: "bg-indigo-600",
     bgImage: "/challenges/meditation-bg.jpg",
     duration: "30 days",
-    progress: 0
+    durationInDays: 30,
+    progress: 0,
+    difficulty: "hard"
   },
   {
     title: "sleep-improvement-challenge",
+    titleReadable: "Sleep Improvement Challenge",
     description: "Maintain a consistent sleep schedule for 3 weeks to enhance sleep quality and overall well-being.",
+    fullDescription: "Set a fixed bedtime and wake-up time. Create a relaxing bedtime routine. Avoid screens 1 hour before bed. Keep your bedroom cool and dark.",
     icon: FaBed,
     bgColor: "bg-purple-600",
     bgImage: "/challenges/sleep-bg.jpg",
     duration: "21 days",
-    progress: 0
+    durationInDays: 21,
+    progress: 0,
+    difficulty: "medium"
   },
   {
     title: "21-days-of-gratitude",
+    titleReadable: "21 Days of Gratitude",
     description: "Write down three things you're grateful for each day for 21 days to boost positivity.",
+    fullDescription: "Use a gratitude journal. Be specific about what you're thankful for. Include small things. Reflect on why you're grateful for each item.",
     icon: FaHandsHolding,
     bgColor: "bg-yellow-600",
     bgImage: "/challenges/gratitude-bg.jpg",
     duration: "21 days",
-    progress: 0
+    durationInDays: 21,
+    progress: 0,
+    difficulty: "easy"
   },
   {
     title: "learn-a-new-skill-in-30-days",
+    titleReadable: "Learn a New Skill in 30 Days",
     description: "Dedicate 1 hour daily for 30 days to learn a new skill of your choice.",
+    fullDescription: "Choose a skill you're passionate about. Break it down into daily tasks. Use online resources or take a course. Practice consistently and track your progress.",
     icon: FaBook,
     bgColor: "bg-green-600",
     bgImage: "/challenges/skill-bg.jpg",
     duration: "30 days",
-    progress: 0
+    durationInDays: 30,
+    progress: 0,
+    difficulty: "medium"
   },
   {
     title: "100-day-coding-sprint",
+    titleReadable: "100 Day Coding Sprint",
     description: "Code for at least 1 hour every day for 100 days to significantly improve your programming skills.",
+    fullDescription: "Choose a programming language or project. Set daily coding goals. Use coding platforms for practice. Join coding communities for support and motivation.",
     icon: FaLaptopCode,
     bgColor: "bg-red-600",
     bgImage: "/challenges/coding-bg.jpg",
     duration: "100 days",
-    progress: 0
+    durationInDays: 100,
+    progress: 0,
+    difficulty: "hard"
   },
   {
     title: "30-day-plank-challenge",
+    titleReadable: "30 Day Plank Challenge",
     description: "Start with a 20-second plank and gradually increase duration over 30 days to strengthen your core.",
+    fullDescription: "Begin with 20-second planks. Increase duration by 10 seconds every few days. Maintain proper form. Add variations like side planks as you progress.",
     icon: FaDumbbell,
     bgColor: "bg-orange-600",
     bgImage: "/challenges/plank-bg.jpg",
     duration: "30 days",
-    progress: 0
+    durationInDays: 30,
+    progress: 0,
+    difficulty: "medium"
   },
   {
     title: "couch-to-5k",
+    titleReadable: "Couch to 5K",
     description: "Follow a 9-week program to go from being a non-runner to completing a 5K run.",
+    fullDescription: "Start with walk-run intervals. Gradually increase running time. Follow the program's schedule. Invest in good running shoes. Stay hydrated and stretch properly.",
     icon: FaRunning,
     bgColor: "bg-teal-600",
     bgImage: "/challenges/running-bg.jpg",
     duration: "63 days",
-    progress: 0
+    durationInDays: 63,
+    progress: 0,
+    difficulty: "hard"
   },
   {
     title: "daily-journaling-challenge",
+    titleReadable: "Daily Journaling Challenge",
     description: "Write in a journal for 15 minutes every day for a month to improve self-reflection and mental clarity.",
+    fullDescription: "Choose a specific time for journaling. Use prompts if needed. Write freely without judgment. Reflect on your day, thoughts, and feelings. Be consistent.",
     icon: FaPencilAlt,
     bgColor: "bg-pink-600",
     bgImage: "/challenges/journaling-bg.jpg",
     duration: "30 days",
-    progress: 0
+    durationInDays: 30,
+    progress: 0,
+    difficulty: "easy"
   },
   {
     title: "mindfulness-month",
+    titleReadable: "Mindfulness Month",
     description: "Practice mindfulness techniques for 10 minutes daily for a month to reduce anxiety and improve focus.",
+    fullDescription: "Start with guided mindfulness exercises. Practice being present in daily activities. Use mindfulness apps for support. Gradually increase duration as you progress.",
     icon: FaBrain,
     bgColor: "bg-cyan-600",
     bgImage: "/challenges/mindfulness-bg.jpg",
     duration: "30 days",
-    progress: 0
+    durationInDays: 30,
+    progress: 0,
+    difficulty: "medium"
   },
   {
     title: "positive-affirmations-challenge",
+    titleReadable: "Positive Affirmations Challenge",
     description: "Repeat positive affirmations to yourself every morning for 30 days to boost self-confidence.",
+    fullDescription: "Create a list of personal affirmations. Say them aloud in front of a mirror. Believe in the words you're saying. Adjust affirmations as needed throughout the challenge.",
     icon: FaSmile,
     bgColor: "bg-lime-600",
     bgImage: "/challenges/affirmations-bg.jpg",
     duration: "30 days",
-    progress: 0
+    durationInDays: 30,
+    progress: 0,
+    difficulty: "easy"
   },
   {
     title: "whole30-diet-challenge",
+    titleReadable: "Whole30 Diet Challenge",
     description: "Follow the Whole30 diet plan for 30 days to reset your eating habits and improve overall health.",
+    fullDescription: "Eliminate sugar, grains, dairy, and legumes. Plan your meals in advance. Read food labels carefully. Cook at home more often. Stay hydrated and get enough sleep.",
     icon: FaCarrot,
     bgColor: "bg-amber-600",
     bgImage: "/challenges/whole30-bg.jpg",
     duration: "30 days",
-    progress: 0
+    durationInDays: 30,
+    progress: 0,
+    difficulty: "hard"
   },
   {
     title: "sugar-free-month",
+    titleReadable: "Sugar-Free Month",
     description: "Eliminate added sugars from your diet for a month to improve energy levels and overall health.",
+    fullDescription: "Read food labels to identify hidden sugars. Replace sugary snacks with fruits. Avoid artificial sweeteners. Stay hydrated to curb sugar cravings.",
     icon: FaCookie,
     bgColor: "bg-gray-600",
     bgImage: "/challenges/sugar-free-bg.jpg",
     duration: "30 days",
-    progress: 0
+    durationInDays: 30,
+    progress: 0,
+    difficulty: "hard"
   },
   {
     title: "vegetarian-for-a-week",
+    titleReadable: "Vegetarian for a Week",
     description: "Try a vegetarian diet for a week to explore new recipes and potential health benefits.",
+    fullDescription: "Plan your meals in advance. Ensure you're getting enough protein. Try new vegetarian recipes. Learn about plant-based nutrition. Keep a food diary to track your experience.",
     icon: FaLeaf,
     bgColor: "bg-emerald-600",
     bgImage: "/challenges/vegetarian-bg.jpg",
     duration: "7 days",
-    progress: 0
+    durationInDays: 7,
+    progress: 0,
+    difficulty: "ultra"
   }
 
 ];

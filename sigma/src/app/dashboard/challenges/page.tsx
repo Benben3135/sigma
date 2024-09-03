@@ -79,7 +79,7 @@ const Page = () => {
                 return (
                   <ChallengeComponent
                     key={challenge._id}
-                    title={challenge.name}
+                    title={challenge.name.replace(/-/g, ' ')}
                     description={matchedChallenge?.description || ''}
                     icon={matchedChallenge?.icon as React.ReactNode}
                     bgColor={matchedChallenge?.bgColor || ''}
@@ -87,6 +87,7 @@ const Page = () => {
                     progress={progress}
                     startDate={new Date(challenge.startDate)}
                     endDate={new Date(challenge.endDate)}
+                    difficulty={matchedChallenge?.difficulty || ''}
                   />
                 );
               })}
@@ -99,11 +100,12 @@ const Page = () => {
           {unstartedChallenges.map((challenge) => (
             <ChallengeComponent
               key={challenge.title}
-              title={challenge.title}
+              title={challenge.titleReadable}
               description={challenge.description}
               icon={challenge.icon as unknown as React.ReactNode}
               bgColor={challenge.bgColor}
               bgImage={challenge.bgImage}
+              difficulty={challenge.difficulty}
             />
           ))}
         </div>
