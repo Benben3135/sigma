@@ -2,6 +2,15 @@ import { FaWater, FaBed, FaBook, FaLaptopCode, FaRunning, FaPencilAlt, FaSmile }
 import { GiMeditation } from 'react-icons/gi';
 import { FaBrain, FaCarrot, FaCookie, FaDumbbell, FaHandsHolding, FaLeaf } from 'react-icons/fa6';
 
+enum ChallengeCategory {
+  Nutrition = 'nutrition',
+  Reading = 'reading',
+  Workout = 'workout',
+  Learning = 'learning',
+  Soul = 'soul',
+  Relationship = 'relationship'
+}
+
 
 export const challenges = [
   {
@@ -15,7 +24,8 @@ export const challenges = [
     duration: "30 days",
     durationInDays: 30,
     progress: 0,
-    difficulty: "medium"
+    difficulty: "medium",
+    category: ChallengeCategory.Nutrition
   },
   {
     title: "meditation-marathon",
@@ -28,7 +38,8 @@ export const challenges = [
     duration: "30 days",
     durationInDays: 30,
     progress: 0,
-    difficulty: "hard"
+    difficulty: "hard",
+    category: ChallengeCategory.Soul
   },
   {
     title: "sleep-improvement-challenge",
@@ -41,7 +52,8 @@ export const challenges = [
     duration: "21 days",
     durationInDays: 21,
     progress: 0,
-    difficulty: "medium"
+    difficulty: "medium",
+    category: ChallengeCategory.Soul
   },
   {
     title: "21-days-of-gratitude",
@@ -54,7 +66,8 @@ export const challenges = [
     duration: "21 days",
     durationInDays: 21,
     progress: 0,
-    difficulty: "easy"
+    difficulty: "easy",
+    category: ChallengeCategory.Soul
   },
   {
     title: "learn-a-new-skill-in-30-days",
@@ -67,7 +80,8 @@ export const challenges = [
     duration: "30 days",
     durationInDays: 30,
     progress: 0,
-    difficulty: "medium"
+    difficulty: "medium",
+    category: ChallengeCategory.Learning
   },
   {
     title: "100-day-coding-sprint",
@@ -80,7 +94,8 @@ export const challenges = [
     duration: "100 days",
     durationInDays: 100,
     progress: 0,
-    difficulty: "hard"
+    difficulty: "hard",
+    category: ChallengeCategory.Learning
   },
   {
     title: "30-day-plank-challenge",
@@ -93,7 +108,8 @@ export const challenges = [
     duration: "30 days",
     durationInDays: 30,
     progress: 0,
-    difficulty: "medium"
+    difficulty: "medium",
+    category: ChallengeCategory.Workout
   },
   {
     title: "couch-to-5k",
@@ -106,7 +122,8 @@ export const challenges = [
     duration: "63 days",
     durationInDays: 63,
     progress: 0,
-    difficulty: "hard"
+    difficulty: "hard",
+    category: ChallengeCategory.Workout
   },
   {
     title: "daily-journaling-challenge",
@@ -119,7 +136,8 @@ export const challenges = [
     duration: "30 days",
     durationInDays: 30,
     progress: 0,
-    difficulty: "easy"
+    difficulty: "easy",
+    category: ChallengeCategory.Soul
   },
   {
     title: "mindfulness-month",
@@ -132,7 +150,8 @@ export const challenges = [
     duration: "30 days",
     durationInDays: 30,
     progress: 0,
-    difficulty: "medium"
+    difficulty: "medium",
+    category: ChallengeCategory.Soul
   },
   {
     title: "positive-affirmations-challenge",
@@ -145,7 +164,8 @@ export const challenges = [
     duration: "30 days",
     durationInDays: 30,
     progress: 0,
-    difficulty: "easy"
+    difficulty: "easy",
+    category: ChallengeCategory.Soul
   },
   {
     title: "whole30-diet-challenge",
@@ -158,7 +178,8 @@ export const challenges = [
     duration: "30 days",
     durationInDays: 30,
     progress: 0,
-    difficulty: "hard"
+    difficulty: "hard",
+    category: ChallengeCategory.Nutrition
   },
   {
     title: "sugar-free-month",
@@ -171,7 +192,8 @@ export const challenges = [
     duration: "30 days",
     durationInDays: 30,
     progress: 0,
-    difficulty: "hard"
+    difficulty: "hard",
+    category: ChallengeCategory.Nutrition
   },
   {
     title: "vegetarian-for-a-week",
@@ -184,7 +206,8 @@ export const challenges = [
     duration: "7 days",
     durationInDays: 7,
     progress: 0,
-    difficulty: "ultra"
+    difficulty: "ultra",
+    category: ChallengeCategory.Nutrition
   }
 
 ];

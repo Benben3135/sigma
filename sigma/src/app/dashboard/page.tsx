@@ -9,6 +9,7 @@ import { useUser } from "@clerk/nextjs";
 import { Skeleton } from "@nextui-org/skeleton";
 import AnimatedNumber from "@/components/AnimatedNumber";
 import FloatingBear from "@/components/FloatingBear";
+import { FaAppleAlt, FaBook, FaDumbbell, FaGraduationCap, FaHeart, FaUserFriends } from "react-icons/fa";
 
 export enum ProgressView {
   Week = "week",
@@ -105,9 +106,9 @@ export default function Page() {
   const dailyRank = (dayData: any) => {
     if (!dayData) return 0;
 
-    const { food = 0, learning = 0, reading = 0, workout = 0 } = dayData;
-    const total = food + learning + reading + workout;
-    const average = total / 4;
+    const { nutrition = 0, reading = 0, workout = 0, learning = 0, soul = 0, relationship = 0 } = dayData;
+    const total = nutrition + reading + workout + learning + soul + relationship;
+    const average = total / 6;
 
     return Math.min(Math.round(average), 100); // Ensure the rank doesn't exceed 100
   };
@@ -235,21 +236,31 @@ export default function Page() {
                 <h2 className="text-2xl font-bold text-white text-center mb-6">
                   Today's Progress
                 </h2>
-                {["Nutrition", "Learning", "Reading", "Workout"].map(
-                  (activity) => (
+                {[
+                  { name: "Nutrition", icon: <FaAppleAlt className="text-xl mr-2" /> },
+                  { name: "Reading", icon: <FaBook className="text-xl mr-2" /> },
+                  { name: "Workout", icon: <FaDumbbell className="text-xl mr-2" /> },
+                  { name: "Learning", icon: <FaGraduationCap className="text-xl mr-2" /> },
+                  { name: "Soul", icon: <FaHeart className="text-xl mr-2" /> },
+                  { name: "Relationship", icon: <FaUserFriends className="text-xl mr-2" /> }
+                ].map(
+                  ({ name, icon }) => (
                     <div
-                      key={activity}
+                      key={name}
                       className="flex justify-between items-center bg-gray-700 p-3 rounded-lg transition-all duration-200 hover:bg-gray-600"
                     >
-                      <span className="text-lg text-gray-200 font-medium">{activity}</span>
+                      <div className="flex items-center">
+                        {icon}
+                        <span className="text-lg text-gray-200 font-medium">{name}</span>
+                      </div>
                       <span
                         className={`text-lg font-bold ${getColor(
-                          Math.min(dayData[activity.toLowerCase()], 100)
+                          Math.min(dayData[name.toLowerCase()], 100)
                         )}`}
                       >
                         <AnimatedNumber
                           target={Math.min(
-                            dayData[activity.toLowerCase()],
+                            dayData[name.toLowerCase()],
                             100
                           )}
                           duration={500}

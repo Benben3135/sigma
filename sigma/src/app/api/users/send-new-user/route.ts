@@ -5,10 +5,10 @@ const API_SERVER_URL = 'http://localhost:3001'; // Ensure this URL matches your 
 
 export async function POST(request: Request) {
   try {
-    const { email, weight, height, age, work, sleep, target } = await request.json();
+    const { email, weight, height, age, work, sleep, target, points } = await request.json();
 
     // Log the received data
-    console.log('Received data:', { email, weight, height, age, work, sleep, target });
+    console.log('Received data:', { email, weight, height, age, work, sleep, target,points });
 
     if (!email || !weight || !height || !age || !work || !sleep || !target) {
       console.log('Missing required parameters');
@@ -24,6 +24,7 @@ export async function POST(request: Request) {
       work,
       sleep,
       target,
+      points
     });
 
     console.log('Response from NestJS server:', response.data);

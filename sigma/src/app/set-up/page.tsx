@@ -78,6 +78,7 @@ const page = () => {
         work: parsedWork,
         sleep: parsedSleep,
         target: parsedTarget,
+        points: 0,
       });
       
       console.log('Response from server:', createNewUser);
