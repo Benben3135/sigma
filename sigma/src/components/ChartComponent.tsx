@@ -3,24 +3,41 @@ import { Chart } from "@/components/Chart";
 import { ChartDataInterface, ChartOptionsInterface } from "@/app/types";
 
 interface ChartComponentProps {
-  data: ChartDataInterface; // The data prop must match the ChartDataInterface
-  options?: ChartOptionsInterface; // The options prop is optional and must match the ChartOptionsInterface
-  height?: number; // The height prop is optional and must be a number
-  width?: number; // The width prop is optional and must be a number
+  data: ChartDataInterface;
+  options?: ChartOptionsInterface;
+  height?: number;
+  width?: number;
+  className?: string;
 }
 
 const ChartComponent: React.FC<ChartComponentProps> = ({
   data,
   options,
-  height = 400, // Provide default height if not passed
-  width = 600,  // Provide default width if not passed
+  height,
+  width,
+  className,
 }) => {
   return (
-    <div style={{ width: `${width}px`, height: `${height}px` }}>
+    <div className={className}>
       <Chart
-        type="bar" // Required: Specify the chart type (e.g., 'bar', 'line', etc.)
-        data={data} // Required: Pass in the data for the chart
-        options={options} // Optional: Pass in any options
+        type="bar"
+        data={data}
+        options={{
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            x: {
+              ticks: {
+                autoSkip: true,
+                maxRotation: 0,
+                minRotation: 0,
+              },
+            },
+          },
+          ...options,
+        }}
+        height={height}
+        width={width}
       />
     </div>
   );

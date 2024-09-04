@@ -1,9 +1,10 @@
 import { Chart } from '@/components/Chart'
 import React from 'react'
+import Loading from '@/components/Loading'
 
 const page = () => {
   return (
-    <Chart />
+    <Loading />
   )
 }
 

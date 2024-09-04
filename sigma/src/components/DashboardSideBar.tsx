@@ -3,138 +3,107 @@
 import { useUser } from "@clerk/nextjs";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useState } from "react";
-import { FaBurger, FaClock, FaLocationArrow, FaPills } from "react-icons/fa6";
+import { useEffect, useState } from "react";
+import { FaClock, FaLocationArrow, FaPills, FaUserFriends, FaRegEnvelope, FaCog, FaQuestionCircle, FaSignOutAlt } from "react-icons/fa";
+import { FaBars, FaBurger, FaPeopleGroup, FaPeopleRoof } from "react-icons/fa6";
 import { MdOutlineSportsGymnastics } from "react-icons/md";
 import { SiProgress } from "react-icons/si";
-import { FaUserFriends } from "react-icons/fa";
-import { FaRegEnvelope } from "react-icons/fa";
-import { FaPeopleGroup } from "react-icons/fa6";
+import { usePathname } from 'next/navigation'
 
 const DashboardSideBar = () => {
   const [activeTab, setActiveTab] = useState(0);
   const { user } = useUser();
+  const path = usePathname();
 
-  const tabs1 = [
-    {
-      name: "Challenges",
-      href: "/dashboard/challenges",
-      icon: <FaLocationArrow />,
-    },
-    { name: "Alarm", href: "/dashboard/alarm", icon: <FaClock /> },
-    { name: "Nutrition", href: "/dashboard/nutrition", icon: <FaPills /> },
-    {
-      name: "Workouts",
-      href: "/dashboard/workouts",
-      icon: <MdOutlineSportsGymnastics />,
-    },
-    { name: "Progress", href: "/dashboard/progress", icon: <SiProgress /> },
+  useEffect(() => {
+    const pathToTabIndex = {
+      "/dashboard": 0,
+      "/dashboard/challenges": 1,
+      "/dashboard/alarm": 2,
+      "/dashboard/nutrition": 3,
+      "/dashboard/workouts": 4,
+      "/dashboard/progress": 5,
+      "/dashboard/friends": 6,
+      "/dashboard/messages": 7,
+      "/dashboard/groups": 8,
+      "/dashboard/settings": 9,
+      "/dashboard/help": 10,
+      "/dashboard/logout": 11
+    } as const;
+    setActiveTab(pathToTabIndex[path as keyof typeof pathToTabIndex] || 0);
+  }, [path]);
+
+  const tabs = [
+    { name: "Main", href: "/dashboard", icon: <FaBurger />, category: "main" },
+    { name: "Challenges", href: "/dashboard/challenges", icon: <FaLocationArrow />, category: "features" },
+    { name: "Alarm", href: "/dashboard/alarm", icon: <FaClock />, category: "features" },
+    { name: "Nutrition", href: "/dashboard/nutrition", icon: <FaPills />, category: "features" },
+    { name: "Workouts", href: "/dashboard/workouts", icon: <MdOutlineSportsGymnastics />, category: "features" },
+    { name: "Progress", href: "/dashboard/progress", icon: <SiProgress />, category: "features" },
+    { name: "Friends", href: "/dashboard/friends", icon: <FaUserFriends />, category: "social" },
+    { name: "Messages", href: "/dashboard/messages", icon: <FaRegEnvelope />, category: "social" },
+    { name: "Groups", href: "/dashboard/groups", icon: <FaPeopleGroup />, category: "social" },
+    { name: "Settings", href: "/dashboard/settings", icon: <FaCog />, category: "account" },
+    { name: "Help", href: "/dashboard/help", icon: <FaQuestionCircle />, category: "account" },
+    { name: "Log Out", href: "/dashboard/logout", icon: <FaSignOutAlt />, category: "account" }
   ];
 
-  const tabs2 = [
-    {
-      name: "friends",
-      href: "/dashboard/friends",
-      icon: <FaUserFriends />,
-    },
-    { name: "messages", href: "/dashboard/messages", icon: <FaRegEnvelope /> },
-    { name: "groups", href: "/dashboard/groups", icon: <FaPeopleGroup /> },
-  ];
-
-  const tabs3 = [
-    {
-      name: "Settings",
-      href: "/dashboard/settings",
-      icon: <FaLocationArrow />,
-    },
-    { name: "Help", href: "/dashboard/help", icon: <FaClock /> },
-    { name: "Log Out", href: "/dashboard/logout", icon: <FaPills /> },
-  ];
+  const renderTabs = (category: string) => {
+    return tabs
+      .filter(tab => tab.category === category)
+      .map((tab, index) => (
+        <Link href={tab.href} key={tab.name}>
+          <motion.div
+            className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors duration-200 ${
+              activeTab === tabs.findIndex(t => t.name === tab.name)
+                ? "bg-violet-600 text-white"
+                : "text-gray-300 hover:bg-violet-600 hover:text-white"
+            }`}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            {tab.icon}
+            <span>{tab.name}</span>
+          </motion.div>
+        </Link>
+      ));
+  };
 
   return (
     <motion.div
       initial={{ x: -100 }}
       animate={{ x: 0 }}
       transition={{ duration: 0.2 }}
-      className="fixed left-0 top-0 h-screen w-[15rem] bg-violet-700 bg-opacity-70 z-10"
+      className="fixed left-0 top-0 h-screen pt-24 w-64 bg-gradient-to-b scrollbar-hide from-violet-800 to-indigo-900 text-white shadow-lg overflow-y-auto"
     >
-      <div className="flex flex-col items-center justify-start pt-20 h-full">
-        <div className="h-fit flex flex-row justify-center items-center w-full mb-6">
-          <p className="text-white text-[1.2rem] font-extrabold antialiased">
-            {user?.firstName?.charAt(0).toLocaleUpperCase()}
-            {user?.firstName?.slice(1)}'s Dashboard
-          </p>
+      <div className="flex flex-col h-full">
+        <div className="mb-4">
+          <h2 className="text-2xl font-bold text-center">
+            {user?.firstName ? user.firstName.charAt(0).toUpperCase() + user.firstName.slice(1) : ''}'s Dashboard
+          </h2>
         </div>
-        <div className="flex flex-col justify-start items-start gap-4 w-full">
-          <div className="w-full" onClick={() => setActiveTab(0)}>
-            <Link href={"/dashboard"}>
-              <div
-                className={
-                  activeTab == 0
-                    ? "text-white bg-gradient-to-r from-indigo-400 to-transparent py-3 text-md font-bold antialiased hover:text-yellow-400 w-full h-fit flex flex-row justify-start pl-12 items-center gap-2"
-                    : "text-white text-md font-bold py-3 antialiased hover:text-yellow-400 w-full h-fit flex flex-row justify-start pl-12 items-center gap-2"
-                }
-              >
-                <FaBurger />
-                <span className="bg-gradient-to-r from-pink-700  to-violet-300 inline-block text-transparent bg-clip-text">
-                  Main
-                </span>
-              </div>
-            </Link>
+
+        <nav className="flex-1 px-4 space-y-8">
+          <div>
+            <h3 className="mb-2 text-xs uppercase tracking-wider text-gray-400">Main</h3>
+            {renderTabs("main")}
           </div>
-          {tabs1.map((tab, index) => (
-            <div
-              key={index}
-              className="w-full"
-              onClick={() => setActiveTab(index + 1)}
-            >
-              <Link href={tab.href}>
-                <div
-                  className={
-                    activeTab == index + 1
-                      ? "text-white bg-gradient-to-r from-indigo-400 to-transparent py-3 text-md font-bold antialiased hover:text-yellow-400 w-full h-fit flex flex-row justify-start pl-12 items-center gap-2"
-                      : "text-white text-md font-bold py-3 antialiased hover:text-yellow-400 w-full h-fit flex flex-row justify-start pl-12 items-center gap-2"
-                  }
-                >
-                  {tab.icon}
-                  {tab.name}
-                </div>
-              </Link>
-            </div>
-          ))}
-        </div>
-        <div className="w-full mt-4">
-          <div
-            className={
-              "text-white  py-3 text-lg font-bold antialiased w-full h-fit flex flex-row justify-start pl-12 items-center gap-2"
-            }
-          >
-            <span className="bg-gradient-to-r from-pink-700  to-violet-300 inline-block text-transparent bg-clip-text">
-              Social
-            </span>
+          <div>
+            <h3 className="mb-2 text-xs uppercase tracking-wider text-gray-400">Features</h3>
+            {renderTabs("features")}
           </div>
-        </div>
-        <div className="flex flex-col justify-start items-start gap-4 w-full">
-          {tabs2.map((tab, index) => (
-            <div
-              key={index}
-              className="w-full"
-              onClick={() => setActiveTab(index + 7)}
-            >
-              <Link href={tab.href}>
-                <div
-                  className={
-                    activeTab == index + 7
-                      ? "text-white bg-gradient-to-r from-indigo-400 to-transparent py-3 text-md font-bold antialiased hover:text-yellow-400 w-full h-fit flex flex-row justify-start pl-12 items-center gap-2"
-                      : "text-white text-md font-bold py-3 antialiased hover:text-yellow-400 w-full h-fit flex flex-row justify-start pl-12 items-center gap-2"
-                  }
-                >
-                  {tab.icon}
-                  {tab.name}
-                </div>
-              </Link>
-            </div>
-          ))}
+          <div>
+            <h3 className="mb-2 text-xs uppercase tracking-wider text-gray-400">Social</h3>
+            {renderTabs("social")}
+          </div>
+          <div>
+            <h3 className="mb-2 text-xs uppercase tracking-wider text-gray-400">Account</h3>
+            {renderTabs("account")}
+          </div>
+        </nav>
+
+        <div className="p-4 mt-auto">
+          <p className="text-sm text-gray-400">&copy; 2024 Sigma</p>
         </div>
       </div>
     </motion.div>

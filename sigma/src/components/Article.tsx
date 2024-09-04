@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "./ui/MovingBorders";
-import { FaClock } from "react-icons/fa6";
+import { FaClock, FaBookOpen } from "react-icons/fa6";
+import { motion } from "framer-motion";
 
 interface ArticleProps {
   _id: string;
@@ -36,42 +37,46 @@ const Article = ({
   const readingTime = Math.ceil(readingTimeSeconds / 60);
 
   return (
-    <Button
-      
-      onClick={() => onBoxClick(title)}
-      duration={Math.floor(Math.random() * 10000) + 10000}
-      borderRadius="1.75rem"
-      style={{
-        background: "rgb(4,7,29)",
-        backgroundColor:
-          "linear-gradient(90deg, rgba(4,7,29,1) 0%, rgba(12,14,35,1) 100%)",
-        borderRadius: `calc(1.75rem* 0.96)`,
-      }}
-      className="flex-1 text-black dark:text-white border-purple"
+    <motion.div
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
+      className="w-full h-[450px]" // Changed to full width, kept fixed height
     >
-      <div className="flex flex-col justify-start items-center pt-3 py-3 md:p-5 lg:p-10 gap-2 h-full">
-        <div className="w-full h-44">
-          <img src={img} alt={title} className="w-fit h-fit rounded-md" />
-        </div>
+      <Button
+        onClick={() => onBoxClick(title)}
+        duration={Math.floor(Math.random() * 10000) + 10000}
+        borderRadius="1.75rem"
+        className="w-full h-full bg-gradient-to-br from-indigo-900 to-purple-900 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+      >
+        <div className="flex flex-col justify-start items-center p-6 gap-4 h-full">
+          <div className="w-full h-48 overflow-hidden rounded-lg">
+            <img 
+              src={img} 
+              alt={title} 
+              className="w-full h-full object-cover transform hover:scale-110 transition-transform duration-300"
+            />
+          </div>
 
-        <div
-          style={{
-            background: "rgb(4,7,29)",
-            backgroundColor:
-              "linear-gradient(90deg, rgba(4,7,29,1) 0%, rgba(12,14,35,1) 100%)",
-            borderRadius: `calc(1.75rem* 0.96)`,
-          }}
-          className="flex flex-col justify-center items-center mt-3 p-2 h-36" // Fixed height
-        >
-          <h1 className="text-xl md:text-2xl font-bold">{title}</h1>
-          <p className="text-white-100 mt-3 font-semibold">{subTitle}</p>
-          <div className="flex flex-row justify-center items-center w-fit mt-2 gap-1">
-            <FaClock scale={0.6}/>
-            <p className="text-white-100 font-semibold">{readingTime}m</p>
+          <div className="flex flex-col justify-center items-center mt-3 p-4 bg-black bg-opacity-30 rounded-xl w-full">
+            <h1 className="text-2xl font-bold text-center mb-2 text-white">
+              {title}
+            </h1>
+            <p className="text-gray-300 text-center font-medium mb-3">{subTitle}</p>
+            <div className="flex justify-center items-center space-x-4">
+              <div className="flex items-center space-x-1">
+                <FaClock className="text-purple-400" />
+                <p className="text-sm font-semibold">{readingTime}m read</p>
+              </div>
+              <div className="flex items-center space-x-1">
+                <FaBookOpen className="text-purple-400" />
+                <p className="text-sm font-semibold">{wordCount} words</p>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </Button>
+      </Button>
+    </motion.div>
   );
 };
 

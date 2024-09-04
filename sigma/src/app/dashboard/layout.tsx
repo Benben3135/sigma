@@ -2,6 +2,7 @@ import Navbar from "@/components/Navbar";
 import DashboardSideBar from "@/components/DashboardSideBar";
 import { ReactNode } from "react";
 import { Spotlight } from "@/components/ui/Spotlight";
+import Footer from "@/components/Footer";
 
 interface LayoutProps {
   children: ReactNode;
@@ -25,10 +26,9 @@ export default function Layout({ children, user }: LayoutProps) {
           />
           <Spotlight className="left-80 top-28 h-[80vh] w-[50vw]" fill="blue" />
           <div
-            className="h-screen w-full dark:bg-black-100 bg-white dark:bg-grid-white/[0.03] bg-grid-black-100/[0.2]
+            className="h-fit w-full dark:bg-black-100 bg-white dark:bg-grid-white/[0.03] bg-grid-black-100/[0.2]
        absolute top-0 left-0 flex items-center justify-center"
           >
-            {/* Radial gradient for the container to give a faded look */}
             <div
               // chnage the bg to bg-black-100, so it matches the bg color and will blend in
               className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-black-100
@@ -38,6 +38,7 @@ export default function Layout({ children, user }: LayoutProps) {
           <div className="flex-1 p-4 ml-[15rem] mt-[6rem] z-20">{children}</div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

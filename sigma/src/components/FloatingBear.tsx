@@ -6,7 +6,7 @@ import Image from 'next/image'; // Assuming you're using Next.js
 const FloatingBear = () => {
   return (
     <motion.div
-      className="w-32 h-32" // Adjust the size as needed
+      className="w-24 h-24" // Adjust the size as needed
       initial={{ y: 0 }}
       animate={{
         y: [0, -20, 0],
