@@ -8,6 +8,7 @@ import {
   FaHandHolding,
   FaBook,
   FaLaptopCode,
+  FaCalendarCheck,
 } from "react-icons/fa";
 import { GiMeditation } from "react-icons/gi";
 import { FaHandsHolding } from "react-icons/fa6";
@@ -16,6 +17,8 @@ import axios from "axios";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useUser } from "@clerk/nextjs";
 import { CircularProgress } from "@nextui-org/progress";
+import MagicButton from "@/components/MagicButton";
+import ButtonLoading from "@/components/ButtonLoading";
 
 const challengeIcons = {
   water: FaWater,
@@ -34,6 +37,22 @@ const Page = ({ params }: { params: { title: string } }) => {
   const [appPointsAdded, setAppPointsAdded] = useState(0);
   const [categoryPointsAdded, setCategoryPointsAdded] = useState(0);
   const [challengeStarted, setChallengeStarted] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [startTime, setStartTime] = useState<string>("");
+  const [endTime, setEndTime] = useState<string>("");
+  const [buttonLoading, setButtonLoading] = useState(false);
+  const [challengeInTimeline, setChallengeInTimeline] = useState(false);
+
+const {
+  data: timelineData,
+  isLoading: isTimelineLoading,
+  error: timelineError,
+} = useQuery({
+  queryKey: ["timeline", email],
+  queryFn: () => axios.get(`http://localhost:3001/timeline/${email}`).then(res => res.data.tasks),
+  enabled: !!email,
+});
+
 
   const {
     data: challengeData,
@@ -47,6 +66,15 @@ const Page = ({ params }: { params: { title: string } }) => {
         .then((res) => res.data),
     enabled: !!email,
   });
+
+  useEffect(() => {
+    if (timelineData && challengeData) {
+      const challengeExists = timelineData.some((task: { type: string; title: string }) => 
+        task.type === 'challenge' && task.title === challengeData.name
+      );
+      setChallengeInTimeline(challengeExists);
+    }
+  }, [timelineData, challengeData]);
 
   const addPoints = (points: number, category: string, appPoints: number) => {
     axios
@@ -77,7 +105,50 @@ const Page = ({ params }: { params: { title: string } }) => {
       });
   };
 
+
+  const addToTimeline = (startTime: string, endTime: string) => {
+    setButtonLoading(true);
+    axios.put(`http://localhost:3001/timeline/${email}/task`, {    
+        type: 'challenge',
+        title: challengeData?.name || 'Unnamed Challenge',
+        startTime: startTime || new Date().toISOString(),
+        endTime: endTime || '',
+        category: challengeData?.category || '',
+        isCompleted: false,
+    })
+    .then((response) => {
+      setButtonLoading(false);
+      setIsModalOpen(false);
+      console.log("Updated timeline:", response.data);
+    })
+    .catch((error) => {
+      console.error("Error updating timeline:", error);
+      setButtonLoading(false);
+      if (error.response) {
+        switch (error.response.status) {
+          case 400:
+            alert("Invalid input. Please check the time format and try again.");
+            break;
+          case 404:
+            alert("Timeline not found. Please refresh the page and try again.");
+            break;
+          default:
+            if (error.response.data && error.response.data.message) {
+              alert(`Error: ${error.response.data.message}`);
+            } else {
+              alert("An error occurred. Please try again later.");
+            }
+        }
+      } else if (error.message === "Network Error") {
+        alert("Network error. Please check your connection and try again.");
+      } else {
+        alert("An unexpected error occurred. Please try again later.");
+      }
+    });
+  };
+
   const challenge = challenges.find((c) => c.title === params.title);
+
 
   if (isLoading) return <Loading />;
   if (error) return <div>Error: {(error as Error).message}</div>;
@@ -122,8 +193,12 @@ const Page = ({ params }: { params: { title: string } }) => {
                 Challenge Started!
               </p>
               <div className="bg-white rounded-full px-4 py-2 flex items-center shadow-md">
-                <span className="text-indigo-600 font-bold text-xl mr-2">+{appPointsAdded}</span>
-                <span className="text-indigo-800 font-medium">Sigma Points</span>
+                <span className="text-indigo-600 font-bold text-xl mr-2">
+                  +{appPointsAdded}
+                </span>
+                <span className="text-indigo-800 font-medium">
+                  Sigma Points
+                </span>
               </div>
             </div>
           </div>
@@ -131,7 +206,10 @@ const Page = ({ params }: { params: { title: string } }) => {
             <p className="text-gray-600 text-lg mb-4">
               You've embarked on an exciting journey. Keep pushing forward!
             </p>
-            <button onClick={() => setChallengeStarted(false)} className="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:-translate-y-1">
+            <button
+              onClick={() => setChallengeStarted(false)}
+              className="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-lg hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:-translate-y-1"
+            >
               View Challenge Details
             </button>
           </div>
@@ -201,6 +279,81 @@ const Page = ({ params }: { params: { title: string } }) => {
                 </div>
               </div>
             )}
+            {isStarted && (
+              <div className="mt-6">
+                <button
+                  onClick={() => {
+                    setIsModalOpen(true);
+                  }}
+                  className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition duration-300 ease-in-out flex items-center justify-center"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-5 w-5 mr-2"
+                    viewBox="0 0 20 20"
+                    fill="currentColor"
+                  >
+                    <path
+                      fillRule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z"
+                      clipRule="evenodd"
+                    />
+                  </svg>
+                  {challengeInTimeline ? "update Timeline" : "Add to Timeline"}
+                </button>
+                {isModalOpen && (
+                  <div className="mb-4 mt-6">
+                    <div className="w-full">
+                      <label
+                        htmlFor="wakeUpTime"
+                        className="block text-sm font-medium text-gray-800 mb-2"
+                      >
+                        Start Time
+                      </label>
+                      <input
+                        onChange={(ev) => setStartTime(ev.target.value)}
+                        type="time"
+                        id="wakeUpTime"
+                        name="wakeUpTime"
+                        className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      />
+                    </div>
+
+                    <div className="w-full">
+                      <label
+                        htmlFor="sleepTime"
+                        className="block text-sm font-medium text-gray-800 mb-2"
+                      >
+                        End Time
+                      </label>
+                      <input
+                        onChange={(ev) => setEndTime(ev.target.value)}
+                        type="time"
+                        id="sleepTime"
+                        name="sleepTime"
+                        className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                      />
+                    </div>
+                    <div className="flex flex-row justify-center items-center mt-3">
+                    {buttonLoading ? <ButtonLoading /> : <button
+                    onClick={() => {
+                      addToTimeline(startTime, endTime);
+                    }}
+                    className="w-fit bg-gradient-to-r from-green-400 to-green-600 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:from-green-500 hover:to-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition duration-300 ease-in-out transform hover:scale-105">
+                      <span className="flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
+                        </svg>
+                        Add to Timeline
+                      </span>
+                    </button>
+                    }
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             <div className="mt-6">
               <p className="text-gray-700 mb-4">{challenge.fullDescription}</p>
               {!isStarted ? (

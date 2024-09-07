@@ -10,6 +10,7 @@ import { Skeleton } from "@nextui-org/skeleton";
 import AnimatedNumber from "@/components/AnimatedNumber";
 import FloatingBear from "@/components/FloatingBear";
 import { FaAppleAlt, FaBook, FaDumbbell, FaGraduationCap, FaHeart, FaUserFriends } from "react-icons/fa";
+import { Tooltip } from "@nextui-org/tooltip";
 
 export enum ProgressView {
   Week = "week",
@@ -271,6 +272,13 @@ export default function Page() {
                   )
                 )}
                 <div className="border-t border-gray-600 pt-6 mt-6">
+                  <Tooltip content={
+                    <div className="px-1 py-2">
+                      <div className="text-small font-bold bg-clip-text bg-gradient-to-r text-opacity-0 from-violet-400 to-yellow-600 text-gray-800">Daily Rank</div>
+                      <div className="text-tiny">Your daily rank is calculated based on your progress in all categories. <br/> It ranges from 0 to 100, with 100 being the highest possible rank.</div>
+                      <div className="text-tiny">Your daily rank affect your overall rank.</div>
+                    </div>
+                  }>
                   <div className="flex justify-between items-center bg-gradient-to-r from-yellow-400 to-yellow-600 p-4 rounded-lg">
                     <span className="text-xl font-bold text-gray-800">
                       DAILY RANK
@@ -287,6 +295,7 @@ export default function Page() {
                       <span className="text-gray-700 text-xl">/100</span>
                     </span>
                   </div>
+                  </Tooltip>
                 </div>
               </div>
             )}

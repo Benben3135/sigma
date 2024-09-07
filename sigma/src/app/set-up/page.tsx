@@ -10,10 +10,11 @@ import Grid from "@/components/Grid";
 import SetUpBoxes from "@/components/SetUpBoxes";
 import { firstSetUp } from "@/data";
 import { Spotlight } from "@/components/ui/Spotlight";
-import {z, ZodError} from "zod"
+import { z, ZodError } from "zod";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Loading from "@/components/Loading";
+import { TimeInput } from "@nextui-org/date-input";
 
 const page = () => {
   const { user } = useUser();
@@ -28,21 +29,43 @@ const page = () => {
   const [work, setWork] = useState<string>("");
   const [sleep, setSleep] = useState<string>("");
   const [target, setTarget] = useState<string>("");
+  const [wakeUpTime, setWakeUpTime] = useState<string>("");
+  const [sleepTime, setSleepTime] = useState<string>("");
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState<boolean>(false);
 
   const Schema = z.object({
-    weight: z.string().regex(/^\d+$/, { message: "Weight must be a string containing only numbers" }).min(1, { message: "Weight must be at least 1 character long" }),
-    height: z.string().regex(/^\d+$/, { message: "height must be a string containing only numbers" }).min(1, { message: "height must be at least 1 character long" }),
-    age: z.string().regex(/^\d+$/, { message: "age must be a string containing only numbers" }).min(1, { message: "age must be at least 1 character long" }),
-    work: z.string().regex(/^\d+$/, { message: "work must be a string containing only numbers" }).min(1, { message: "work must be at least 1 character long" }),
-  })
+    weight: z
+      .string()
+      .regex(/^\d+$/, {
+        message: "Weight must be a string containing only numbers",
+      })
+      .min(1, { message: "Weight must be at least 1 character long" }),
+    height: z
+      .string()
+      .regex(/^\d+$/, {
+        message: "height must be a string containing only numbers",
+      })
+      .min(1, { message: "height must be at least 1 character long" }),
+    age: z
+      .string()
+      .regex(/^\d+$/, {
+        message: "age must be a string containing only numbers",
+      })
+      .min(1, { message: "age must be at least 1 character long" }),
+    work: z
+      .string()
+      .regex(/^\d+$/, {
+        message: "work must be a string containing only numbers",
+      })
+      .min(1, { message: "work must be at least 1 character long" }),
+  });
 
   const handleConfirm = async () => {
     try {
       setErrors({});
-  
+
       // Validate data using Zod schema
       const result = Schema.parse({
         weight,
@@ -50,9 +73,9 @@ const page = () => {
         age,
         work,
       });
-  
+
       // Log the data being sent to the API
-      console.log('Sending data:', {
+      console.log("Sending data:", {
         email,
         weight,
         height,
@@ -62,13 +85,13 @@ const page = () => {
         target,
       });
 
-    const parsedWeight = parseFloat(weight);
-    const parsedHeight = parseFloat(height);
-    const parsedAge = parseFloat(age);
-    const parsedWork = parseFloat(work);
-    const parsedSleep = parseFloat(sleep);
-    const parsedTarget = parseFloat(target);
-  
+      const parsedWeight = parseFloat(weight);
+      const parsedHeight = parseFloat(height);
+      const parsedAge = parseFloat(age);
+      const parsedWork = parseFloat(work);
+      const parsedSleep = parseFloat(sleep);
+      const parsedTarget = parseFloat(target);
+
       // Make POST request to your Next.js API route
       const createNewUser = await axios.post("/api/users/send-new-user", {
         email,
@@ -80,9 +103,9 @@ const page = () => {
         target: parsedTarget,
         points: 0,
       });
-      
-      console.log('Response from server:', createNewUser);
-      if(createNewUser.status === 201) {
+
+      console.log("Response from server:", createNewUser);
+      if (createNewUser.status === 201) {
         setPage(5);
       }
     } catch (error) {
@@ -93,7 +116,7 @@ const page = () => {
         });
         setErrors(errorMessages);
       } else {
-        console.error('An unexpected error occurred:', error);
+        console.error("An unexpected error occurred:", error);
       }
     }
   };
@@ -101,18 +124,33 @@ const page = () => {
   const initializeData = async () => {
     try {
       setLoading(true);
-      const response = await axios.post("http://localhost:3001/data", {
+      const dataResponse = await axios.post("http://localhost:3001/data", {
         email,
       });
-      debugger;
-      console.log('Response from server:', response);
-      if(response.status === 201) {
+      console.log("Data initialization response:", dataResponse);
+
+      const timelineResponse = await axios.post(
+        "http://localhost:3001/timeline",
+        {
+          email,
+          wakeUpTime,
+          sleepTime,
+          tasks: []
+        }
+      );
+      console.log("Timeline initialization response:", timelineResponse);
+
+      if (dataResponse.status === 201 && timelineResponse.status === 201) {
         router.push("/dashboard");
+      } else {
+        console.error("Initialization failed");
       }
     } catch (error) {
-      console.error('An unexpected error occurred:', error);
+      console.error("An unexpected error occurred:", error);
+    } finally {
+      setLoading(false);
     }
-  }
+  };
 
   const handleBoxClick1 = (index: number) => {
     setSelected1((prevSelected) => {
@@ -127,8 +165,8 @@ const page = () => {
     });
   };
 
-  if(loading) {
-    return <Loading />
+  if (loading) {
+    return <Loading />;
   }
 
   return (
@@ -188,13 +226,58 @@ const page = () => {
       )}
       {page === 2 && (
         <>
-          <h1>TODO</h1>
-          <MagicButton
-            handleClick={() => setPage(3)}
-            title="Let's go."
-            icon={<FaAngleRight />}
-            position="right"
-          />
+          <div className="w-screen h-screen flex flex-col justify-center items-center">
+            <div className="flex flex-col gap-8 justify-center items-center relative my-20 z-10 max-w-md w-full px-4">
+              <h1 className="heading text-center">
+                Set your <span className="text-purple">wake up</span> and{" "}
+                <span className="text-purple">sleep</span> time
+              </h1>
+
+              <div className="w-full">
+                <label
+                  htmlFor="wakeUpTime"
+                  className="block text-sm font-medium text-gray-200 mb-2"
+                >
+                  Wake up time
+                </label>
+                <input
+                  onChange={(ev) => setWakeUpTime(ev.target.value)}
+                  type="time"
+                  id="wakeUpTime"
+                  name="wakeUpTime"
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+
+              <div className="w-full">
+                <label
+                  htmlFor="sleepTime"
+                  className="block text-sm font-medium text-gray-200 mb-2"
+                >
+                  Sleep time
+                </label>
+                <input
+                  onChange={(ev) => setSleepTime(ev.target.value)}
+                  type="time"
+                  id="sleepTime"
+                  name="sleepTime"
+                  className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+              </div>
+
+              <p className="text-sm text-gray-300 text-center">
+                Setting your wake up and sleep time helps us tailor your daily
+                routines and challenges.
+              </p>
+            </div>
+
+            <MagicButton
+              handleClick={() => setPage(3)}
+              title="Let's go."
+              icon={<FaAngleRight />}
+              position="right"
+            />
+          </div>
         </>
       )}
       {page === 3 && (
@@ -259,20 +342,43 @@ const page = () => {
                 >
                   <div className="w-full h-full p-4 grid grid-cols-2 grid-rows-3">
                     <div className="flex-1 p-4 gap-2 flex flex-row justify-between items-center">
-                      <h2 className="font-sans antialiased font-bold">Weight</h2>
-                      <input placeholder="KG" onChange={(ev) => setWeight(ev.target.value)} type="text" className="rounded-md bg-indigo-900 backdrop-blur-md text-white-100 pl-2" />
+                      <h2 className="font-sans antialiased font-bold">
+                        Weight
+                      </h2>
+                      <input
+                        placeholder="KG"
+                        onChange={(ev) => setWeight(ev.target.value)}
+                        type="text"
+                        className="rounded-md bg-indigo-900 backdrop-blur-md text-white-100 pl-2"
+                      />
                     </div>
                     <div className="flex-1 p-4 gap-2 flex flex-row justify-between items-center">
-                      <h2 className="font-sans antialiased font-bold">Height</h2>
-                      <input placeholder="CM" onChange={(ev) => setHeight(ev.target.value)} type="text" className="rounded-md bg-indigo-900 backdrop-blur-md text-white-100 pl-2" />
+                      <h2 className="font-sans antialiased font-bold">
+                        Height
+                      </h2>
+                      <input
+                        placeholder="CM"
+                        onChange={(ev) => setHeight(ev.target.value)}
+                        type="text"
+                        className="rounded-md bg-indigo-900 backdrop-blur-md text-white-100 pl-2"
+                      />
                     </div>
                     <div className="flex-1 p-4 gap-2 flex flex-row justify-between items-center">
                       <h2 className="font-sans antialiased font-bold">age</h2>
-                      <input onChange={(ev) => setAge(ev.target.value)} type="text" className="rounded-md bg-indigo-900 backdrop-blur-md text-white-100 pl-2" />
+                      <input
+                        onChange={(ev) => setAge(ev.target.value)}
+                        type="text"
+                        className="rounded-md bg-indigo-900 backdrop-blur-md text-white-100 pl-2"
+                      />
                     </div>
                     <div className="flex-1 p-4 gap-2 flex flex-row justify-between items-center">
-                      <h2 className="font-sans antialiased font-bold">Avg. sleep hours</h2>
-                      <select onChange={(ev) => setSleep(ev.target.value)} className="rounded-md bg-indigo-900 backdrop-blur-md text-white-100 pl-2 flex-1" >
+                      <h2 className="font-sans antialiased font-bold">
+                        Avg. sleep hours
+                      </h2>
+                      <select
+                        onChange={(ev) => setSleep(ev.target.value)}
+                        className="rounded-md bg-indigo-900 backdrop-blur-md text-white-100 pl-2 flex-1"
+                      >
                         <option value="2">2</option>
                         <option value="4">4</option>
                         <option value="5">5</option>
@@ -282,8 +388,13 @@ const page = () => {
                       </select>
                     </div>
                     <div className="flex-1 p-4 gap-2 flex flex-row justify-between items-center">
-                      <h2 className="font-sans antialiased font-bold">sleep target</h2>
-                      <select onChange={(ev) => setTarget(ev.target.value)} className="rounded-md bg-indigo-900 backdrop-blur-md text-white-100 pl-2 flex-1" >
+                      <h2 className="font-sans antialiased font-bold">
+                        sleep target
+                      </h2>
+                      <select
+                        onChange={(ev) => setTarget(ev.target.value)}
+                        className="rounded-md bg-indigo-900 backdrop-blur-md text-white-100 pl-2 flex-1"
+                      >
                         <option value="6">6</option>
                         <option value="7">7</option>
                         <option value="8">8</option>
@@ -291,19 +402,40 @@ const page = () => {
                       </select>
                     </div>
                     <div className="flex-1 p-4 gap-2 flex flex-row justify-between items-center">
-                      <h2 className="font-sans antialiased font-bold">work hours</h2>
-                      <input onChange={(ev) => setWork(ev.target.value)} type="text" className="rounded-md bg-indigo-900 backdrop-blur-md text-white-100 pl-2" />
+                      <h2 className="font-sans antialiased font-bold">
+                        work hours
+                      </h2>
+                      <input
+                        onChange={(ev) => setWork(ev.target.value)}
+                        type="text"
+                        className="rounded-md bg-indigo-900 backdrop-blur-md text-white-100 pl-2"
+                      />
                     </div>
-                    
                   </div>
                 </div>
                 <div className="flex flex-col justify-center items-center gap-1 antialiased mt-3">
-                {errors.weight && <p className="text-sm" style={{ color: 'red' }}>{errors.weight}</p>}
-                {errors.height && <p className="text-sm" style={{ color: 'red' }}>{errors.weight}</p>}
-                {errors.age && <p className="text-sm" style={{ color: 'red' }}>{errors.weight}</p>}
-                {errors.work && <p className="text-sm" style={{ color: 'red' }}>{errors.weight}</p>}
+                  {errors.weight && (
+                    <p className="text-sm" style={{ color: "red" }}>
+                      {errors.weight}
+                    </p>
+                  )}
+                  {errors.height && (
+                    <p className="text-sm" style={{ color: "red" }}>
+                      {errors.weight}
+                    </p>
+                  )}
+                  {errors.age && (
+                    <p className="text-sm" style={{ color: "red" }}>
+                      {errors.weight}
+                    </p>
+                  )}
+                  {errors.work && (
+                    <p className="text-sm" style={{ color: "red" }}>
+                      {errors.weight}
+                    </p>
+                  )}
                 </div>
-               
+
                 <MagicButton
                   title="Confirm"
                   icon={<FaLocationArrow />}
@@ -315,7 +447,7 @@ const page = () => {
           </div>
         </>
       )}
-       {page === 5 && (
+      {page === 5 && (
         <>
           <div className="flex justify-center relative my-20 z-10">
             <div className="max-w-[89vw] md:max-w-2xl lg:max-w-[60vw] flex flex-col items-center justify-center">
@@ -332,7 +464,7 @@ const page = () => {
                 <span className="bg-gradient-to-r from-blue-600 via-green-500 to-indigo-400 inline-block text-transparent bg-clip-text">
                   all
                 </span>{" "}
-               done.
+                done.
               </p>
 
               <MagicButton
